@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -7,11 +7,14 @@ import {
   NavbarMenu,
   NavbarContent,
   NavbarItem,
+  useDisclosure,
 } from "@nextui-org/react";
 import { TbChevronDown, TbLogout, TbUsers } from "react-icons/tb";
 import SimpleDropdown from './shared/SimpleDropdown';
 import { useAuth } from "../lib/AuthContext";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FaHandPointer } from "react-icons/fa";
+import AuthModal from "./shared/AuthModal";
 
 export const AcmeLogo = () => {
   return (
@@ -29,24 +32,48 @@ export const AcmeLogo = () => {
 export default function Nav() {
   const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
   const {pathname}=useLocation()
+  const navigate =useNavigate()
 
+  // const menuItems = [
+  //     {
+  //       name:"Send Money",
+  //       href:"/home/send-money"
+  //     },
+  //     {
+  //       name:"Payment Hub(USD)",
+  //       href:"/home/hub"
+  //     },
+  //     {
+  //       name:"Marketplace",
+  //       href:"/home/marketplace"
+  //     },
+  //     {
+  //       name:"Express Delivery",
+  //       href:"/home/express-delivery"
+  //     },
+  // ];
   const menuItems = [
       {
         name:"Send Money",
-        href:"/home/send-money"
+        href:"/send-money"
       },
+      // {
+      //   name:"Payment Hub(USD)",
+      //   href:"/hub"
+      // },
       {
-        name:"Payment Hub(USD)",
-        href:"/home/hub"
+        name:"Bill Ease",
+        href:"/bill"
       },
       {
         name:"Marketplace",
-        href:"/home/marketplace"
+        href:"/marketplace"
       },
       {
         name:"Express Delivery",
-        href:"/home/express-delivery"
+        href:"/express-delivery"
       },
   ];
 
@@ -55,7 +82,7 @@ export default function Nav() {
         <NavbarContent className="pr-3" justify="start">
       <NavbarMenuToggle className="sm:hidden" aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
         <NavbarBrand>
-          <Link to="/home" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
           <AcmeLogo />
           <p className="font-bold text-inherit">MONICLAN</p>
           </Link>
@@ -75,7 +102,7 @@ export default function Nav() {
               </NavbarItem>
             ))
           }
-        <NavbarItem>
+       {user ? <NavbarItem>
          <SimpleDropdown
           trigger={
             <div className="flex items-center gap-2">
@@ -85,20 +112,28 @@ export default function Nav() {
           }
           items={[
             {text: 'Profile', icon: <TbUsers size="18"/>},
+            {text: 'Transaction History', icon: <TbLogout size="18"/>, onClick:()=>navigate('/transaction-history')},
             {text: 'Logout', icon: <TbLogout size="18"/>, onClick: logout},
           ]}
         />
-        </NavbarItem>
+        </NavbarItem>:    <NavbarItem className="flex px-3 py-1 rounded-md border border-[#2c5e9b]">
+              <div className="relative">
+            <div className="absolute -bottom-10 -left-8 -translate-x-1/2 animate-bounce z-10">
+            <FaHandPointer size={25} className="rotate-45 text-gray-600" />
+            </div>
+          </div>
+              <Link to="#" onClick={onOpen}>Sign in</Link>
+            </NavbarItem>}
         </div>      
       </NavbarContent>
 
       <NavbarMenu className="mt-5">
         {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item.name}-${index}`}>
+          <NavbarMenuItem onClick={()=>setIsMenuOpen(false)} key={`${item.name}-${index}`}>
             <Link
               className="w-full text-blue-700 hover:text-blue-800 font-bold"
               color={ "foreground"  }
-              href="#"
+              to={item.href}
               size="lg"
             >
               {item.name}
@@ -106,6 +141,7 @@ export default function Nav() {
           </NavbarMenuItem>
         ))}
       </NavbarMenu>
+      <AuthModal onOpenChange={onOpenChange} isOpen={isOpen} user={user} onClose={onClose}/>
     </Navbar>
   );
 }

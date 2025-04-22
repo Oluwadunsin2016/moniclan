@@ -7,10 +7,12 @@ import { useShallow } from 'zustand/react/shallow';
 import axios from 'axios';
 import countries from '../../lib/countries';
 import CountryFlag from '../ui/CountryFlag';
-import { cn, formatCurrency } from '../../lib/utils';
+import { cn, formatCurrency, notifier } from '../../lib/utils';
+import { useAuth } from '../../lib/AuthContext';
 
 
 const TransferAmount = ({goNext,editMode}) => {
+   const { user } = useAuth();
    const [loading, setLoading] = useState(false)
   const {data,updateData}=useDataStore()
   const [to, from] = useTransaction(
@@ -91,7 +93,12 @@ const TransferAmount = ({goNext,editMode}) => {
     // };
 
 const continuePayment=()=>{
-goNext()
+    if (user) {
+      goNext()
+    }else{
+      notifier({message:'Sign in to continue',type:'error'})
+    }
+
 }
 
 // const handleSelect = (e)=>{
@@ -221,7 +228,7 @@ const handleCalculate = async (amount) => {
         {loading? <div className="h-[3rem] flex items-center justify-center">
             <Spinner color="primary" />
             </div>:
-        <strong className=" text-green-500">
+        <strong>
           {/* {countries[from]?.currencyCode} 1 = {fetchExchangeRate(1)} {countries[to]?.currencyCode}{" "} */}
           {formatCurrency(countries[from]?.currencyCode,1)} = {formatCurrency(countries[to]?.currencyCode,data.exchangeRate)}
         </strong>
@@ -243,9 +250,9 @@ const handleCalculate = async (amount) => {
 {!editMode&&
       <div>
       <Button 
-        onClick={continuePayment}
+        onPress={continuePayment}
         size="md"
-        className="bg-green-400 w-full transition-all hover:scale-100 text-white rounded-sm my-6 text-lg py-6"
+        className="bg-primary w-full transition-all hover:scale-100 text-white rounded-md my-6 text-lg py-6"
       >
         Continue
       </Button>

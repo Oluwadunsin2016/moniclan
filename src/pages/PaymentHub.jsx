@@ -1,34 +1,41 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 
 import { useEffect, useState } from "react";
 import { FaCcVisa } from "react-icons/fa";
 import { FaSync } from "react-icons/fa";
 import { PaystackButton } from "react-paystack";
-import { Button } from "@nextui-org/react";
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, Spinner, } from "@nextui-org/react";
+import { Select } from "antd";
 import PaymentModal from "../components/hub/PaymentModal";
 import { useCalculateCurrencyMutation } from "../apis/calculate";
 import { useAuth } from "../lib/AuthContext";
-import { formatCurrency } from "../lib/utils";
+import { formatCurrency, notifier } from "../lib/utils";
 import { useDataStore } from "../store/Global";
+import FileUpload from "../components/shared/FileUpload";
+import { useCancelSubscription, useGetActiveSubscription } from "../apis/transaction";
+import { services } from "../lib/data";
+import axios from "axios";
 
 const PaymentHubPage = () => {
   const { user } = useAuth();
+  const [isLoading,setIsLoading]=useState(false)
   const [service, setService] = useState("");
-  const [usdAmount, setUsdAmount] = useState("");
+  const [plan, setPlan] = useState("onetime-off");
+  const [usdAmount, setUsdAmount] = useState('');
   const [checkoutLink, setCheckoutLink] = useState("");
   const [isOpen, setIsOpen] = useState(false)
-  const [nairaAmount, setNairaAmount] = useState(0);
-const [exchangeRate, setExchangeRate] = useState(0)
+  const [nairaAmount, setNairaAmount] = useState('');
+const [exchangeRate, setExchangeRate] = useState('')
+const [idCard, setIdCard] = useState('')
+const [bvn, setIdBvn] = useState('')
+const [error, setError] = useState("");
+  
+const {data}=useGetActiveSubscription(user?._id)
 
   const {mutateAsync, isPending}=useCalculateCurrencyMutation()
    const {updateData}=useDataStore()
-
-  const services = [
-    "Netflix", "Spotify", "Apple Music", "Youtube Premium", "Amazon",
-    "AliExpress", "eBay", "Google Cloud", "AWS", "Domains", "Udemy",
-    "Coursera", "LinkedIn Learning", "Facebook Ads", "Google Ads",
-    "Instagram Ads", "Upwork", "Fiverr", "Freelancer", "Xbox", "Steam",
-    "Epic Games", "Bybit", "Binance", "Others"
-  ];
+  ;
 
   const handleConvert = async() => {
    const {convertedAmount,exchangeRate} = await mutateAsync({amount:usdAmount, from:'US', to:'NG'})
@@ -42,7 +49,8 @@ const [exchangeRate, setExchangeRate] = useState(0)
   // }
 
   console.log("nairaAmount:",nairaAmount);
-  const disable=!service || !nairaAmount
+  const notAvailable=plan=="onetime-off"?!bvn:!idCard || !bvn
+  const disable=!service || !nairaAmount || notAvailable || error
 
   // useEffect(() => {
   //   const fetchExchangeRate = async () => {
@@ -55,13 +63,15 @@ const [exchangeRate, setExchangeRate] = useState(0)
 
   useEffect(() => {
     updateData({
-      service: service,
+      service,
       convertedAmount: nairaAmount,
       amount: usdAmount,
       paymentMethod: "Transfer",
       from: "USD",
       to: "NGN",
       exchangeRate,
+      plan,
+      bvn,
       reason:'Payment for service',
       type:'Payment Hub',
       recipient_accountDetails: {
@@ -73,7 +83,10 @@ const [exchangeRate, setExchangeRate] = useState(0)
       },
       senderDetails: user,
     });
-  }, [service,nairaAmount,service])
+  }, [service,nairaAmount,plan,bvn])
+
+
+  
   
   
 
@@ -95,8 +108,73 @@ const [exchangeRate, setExchangeRate] = useState(0)
     onClose: () => alert("Payment canceled"),
   };
 
-  console.log(user);
+
+const handleSelect=(e)=>{
+console.log("Selected plan:", e);
+setPlan(e)
+}
+
+const handleSelectService=(e)=>{
+const existed =  data?.data?.subscriptions?.find(sub=>sub.service==e)
+
+if (existed) {
+  notifier({message:`You have already subscribed for ${e}`,type:'error'})
+}else{
+  console.log("Selected service:", e);
+  setService(e)
+}
+}
   
+const handleComplete=()=>{
+  setUsdAmount('')
+  setNairaAmount('')
+  setExchangeRate('')
+  setIdCard('')
+  setIdBvn('')
+  setPlan('onetime-off')
+  setService('')
+}
+
+const handleMakeTransfer=async()=>{
+  if (!user) return  notifier({message:'Sign in to continue the transactions',type:'error'})
+  try {
+if (idCard) {
+  setIsLoading(true)
+  const formData = new FormData()
+  formData.append('media',idCard)
+  const response = await axios.post('https://backendurl.cittis.co/user/upload_media',formData)
+  console.log(response.data.data);
+  updateData({idCard:response.data.data})
+  setIsLoading(false)
+}
+    setIsOpen(true) 
+  } catch (error) {
+    notifier({message:'An error occurred while uploading Id card',type:'error'})
+  }
+}
+
+
+
+
+
+
+const handleBVNChange = (e) => {
+  const val = e.target.value;
+  if (/^\d{0,11}$/.test(val)) {
+    setIdBvn(val);
+    if (val.length === 11) {
+      setError(""); // valid
+    }
+  }
+};
+
+const handleBlur = () => {
+  if (bvn.length !== 11) {
+    setError("Enter your eleven digit BVN");
+  } else {
+    setError("");
+  }
+};
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-4">
@@ -116,11 +194,83 @@ const [exchangeRate, setExchangeRate] = useState(0)
 
       {/* Payment Form */}
       <div className="bg-white mt-8 p-6 rounded-lg shadow-md w-full">
-        <h2 className="text-lg font-semibold mb-4">Pay for your services</h2>
+        <div className="flex items-center justify-end">
+     <ActiveSubScription subscriptions={data?.data?.subscriptions} />
+        </div>
+        <h2 className="text-lg font-semibold mb-4 whitespace-nowrap">Pay for your services</h2>
 
+     <label className="block mt-4 font-medium text-gray-700">
+            Plan
+          </label>
+          <Select
+            style={{
+              width: "100%",
+            }}
+            placeholder="Please select plan"
+            value={plan}
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+            name="plan"
+            size="large"
+            className="w-full"
+            onChange={(e) => handleSelect(e)}
+            options={[{value:'onetime-off', label:'One-time Off'},{value:'recurrence', label:'Recurrence'}]}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          />
+
+<div>
+<label className="block mt-4 font-medium text-gray-700">
+            BVN
+          </label>
+          <Input
+        radius="sm"
+        variant="bordered"
+        type="text"
+        inputMode="numeric"
+        pattern="[0-9]*"
+        value={bvn}
+        onChange={handleBVNChange}
+        onBlur={handleBlur}
+        maxLength={11}
+        isInvalid={!!error}
+        errorMessage={error}
+        classNames={{
+          inputWrapper:
+            "border border-gray-300 focus:outline-none focus:ring-0 focus:border-gray-300 text-sm",
+        }}
+        placeholder="Enter 11-digit BVN"
+      />
+</div>
+<div className={`${plan=='onetime-off'&&'hidden'}`}>
+<label className="block mt-4 font-medium text-gray-700">
+            ID Card
+          </label>
+          <p className="text-xs text-gray-500  mb-2">Provide a valid ID card e.g voter&apos;s card, driver&apos;s licence etc</p>
+          <FileUpload plan={plan} setIdCard={setIdCard}/>
+</div>
+  
         {/* Select Service */}
-        <label className="block mt-4 text-sm font-medium text-gray-700">Select Service</label>
-        <select
+        <label className="block mt-4 font-medium text-gray-700">Select Service</label>
+        <Select
+          showSearch
+            allowClear
+            style={{
+              width: "100%",
+            }}
+            placeholder="Please select service"
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+            name="plan"
+            size="large"
+            className="w-full"
+            value={service}
+            onChange={(e) => handleSelectService(e)}
+            options={services}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          />
+        {/* <select
           value={service}
           onChange={(e) => setService(e.target.value)}
           className="w-full mt-1 p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
@@ -129,10 +279,10 @@ const [exchangeRate, setExchangeRate] = useState(0)
           {services.map((s, i) => (
             <option key={i} value={s}>{s}</option>
           ))}
-        </select>
+        </select> */}
 
         {/* USD Amount */}
-        <label className="block mt-4 text-sm font-medium text-gray-700">Amount in USD</label>
+        <label className="block mt-4 font-medium text-gray-700">Amount in USD</label>
         <input
           type="number"
           value={usdAmount}
@@ -151,7 +301,7 @@ const [exchangeRate, setExchangeRate] = useState(0)
         </button>
 
         {/* Naira Amount */}
-        <label className="block mt-4 text-sm font-medium text-gray-700">Amount in Naira</label>
+        <label className="block mt-4 font-medium text-gray-700">Amount in Naira</label>
         <input
           type="text"
           value={nairaAmount?formatCurrency('NGN',nairaAmount):''}
@@ -160,7 +310,7 @@ const [exchangeRate, setExchangeRate] = useState(0)
         />
 
         {/* Checkout Link */}
-        <label className="block mt-4 text-sm font-medium text-gray-700">Product Checkout Link</label>
+        <label className="block mt-4 font-medium text-gray-700">Product Checkout Link</label>
         <input
           type="text"
           value={checkoutLink}
@@ -176,16 +326,111 @@ const [exchangeRate, setExchangeRate] = useState(0)
             disabled={disable}
             className="w-full bg-green-600 disabled:bg-green-300 disabled:cursor-not-allowed text-white p-2 rounded-lg hover:bg-green-700 transition"
           />
-          <Button isDisabled={disable} onPress={()=>setIsOpen(true)} className="w-full bg-gray-700 text-white p-2 rounded-lg hover:bg-gray-800 transition">
-            Pay with transfer
+          <Button isDisabled={disable} onPress={handleMakeTransfer} className="w-full text-center bg-gray-700 text-white p-2 rounded-lg hover:bg-gray-800 transition">
+           {isLoading? <span className="flex items-center gap-2 justify-center"><Spinner size="sm" color="white" /> Please wait...</span> :"Pay with transfer"}
           </Button>
         </div>
 
-        <PaymentModal service={service} amount={nairaAmount} isOpen={isOpen} onClose={()=>setIsOpen(false)} />
+        <PaymentModal handleComplete={handleComplete} isOpen={isOpen} onClose={()=>setIsOpen(false)} />
       </div>
     </div>
   );
 };
 
+
+const ActiveSubScription=({subscriptions})=>{
+  const [open, setOpen] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [selected, setSelected] = useState({})
+ 
+  const handleCancelSubscription=(sub)=>{
+    setSelected(sub);
+    setOpenModal(true)
+    setOpen(false);
+  }
+
+return (
+<div>
+       <Popover
+              isOpen={open}
+              onOpenChange={setOpen}
+              placement="bottom-end"
+              showArrow={true}
+              radius="sm"
+              
+            >
+              <PopoverTrigger>
+              <Button color="primary" radius="sm" className="">Active Subscriptions</Button>
+              </PopoverTrigger>
+              <PopoverContent className="sm:max-w-[500px] md:max-w-[600px] lg:max-w-[700px]">
+                <div className="px-4 py-2 w-[200px] gap-4 grid grid-cols-1 overflow-y-scroll  custom-scrollbar">
+                  {subscriptions?.length>0?subscriptions?.map((sub, index) => (
+                      <Button
+                        key={index}
+                        onPress={() =>handleCancelSubscription(sub)}
+                        className={`flex flex-col h-11 gap-1 items-stretch rounded-md hover:bg-primary-500 hover:text-white ${sub._id === selected?._id && "border-2 border-primary-500"}
+                        `}
+                      >
+                        <div className="flex flex-row gap-2 items-center">
+                     
+                          <p className="text-sm font-medium">{sub.service}</p>
+                        </div>
+                      </Button>
+                    )
+                  ):<p className="text-center">No subscription</p>}
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            <ConfirmModal id={selected?._id} isOpen={openModal} onOpenChange={()=>setOpenModal(!openModal)} onClose={()=>setOpenModal(false)} />
+</div>
+)
+}
+
+
+
+const ConfirmModal = ({ onOpenChange, isOpen, onClose,id }) => {
+  const { user } = useAuth();
+    const {mutateAsync:cancelSubscription, isPending}= useCancelSubscription(user?._id)
+
+  const confirm = async() => {
+    await cancelSubscription(id,{
+      onSuccess:(data)=>{
+        notifier({message:data?.data?.message??'Subscription successfully cancelled',type:'success'})
+        onClose()
+      },
+      onError:(error)=>{
+        notifier({message:error.response.message??'There is an error making the transaction',type:'error'})
+        console.log(error);
+      }
+    })
+    onClose();
+  };
+  return (
+    <Modal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
+      <ModalContent>
+        <ModalHeader>Do you want to cancel this subsription?</ModalHeader>
+        <ModalBody>
+          <p>
+            Your actions can not be undone once executed
+          </p>
+        </ModalBody>
+        <ModalFooter className="flex items-center justify-end gap-4">
+          <Button
+            color="danger"
+            variant="light"
+            onPress={onClose}
+            className="rounded-md"
+          >
+            No
+          </Button>
+          <Button isDisabled={isPending} color="primary" onPress={confirm} className="rounded-md">
+           {isPending? <span className="flex items-center gap-2 justify-center"><Spinner color="white" size="sm" /> Please wait...</span>:'Yes'}
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
 
 export default PaymentHubPage

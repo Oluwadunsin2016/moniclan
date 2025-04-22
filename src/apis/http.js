@@ -1,9 +1,9 @@
 import axios from "axios";
 // console.log(import.meta.env.BACKEND_BASE_URL)
 const http = axios.create({
-    // baseURL: 'http://localhost:1100',
+    baseURL: 'http://localhost:1100',
     // baseURL: 'https://backend.africana.moniclan.com',
-    baseURL: 'https://africana-backend.onrender.com',
+    // baseURL: 'https://africana-backend.onrender.com',
 });
 
 http.interceptors.request.use((config) => { 

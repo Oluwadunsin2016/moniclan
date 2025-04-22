@@ -3,9 +3,6 @@
 import { useEffect, useState } from "react";
 import {
   Button,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   Spinner,
 } from "@nextui-org/react";
 import countries from "../lib/countries";
@@ -15,6 +12,7 @@ import axios from "axios";
 import useTransaction, { useDataStore } from "../store/Global";
 import CountryFlag from "../components/ui/CountryFlag";
 import { useNavigate } from "react-router-dom";
+import SelectCountries from "../components/SelectCountries";
 
 const countriesData = countries;
 const data = [
@@ -129,7 +127,7 @@ const Home = () => {
               </div>
             ))}
             <button
-              onClick={() => navigate("/home/transfer")}
+              onClick={() => navigate("/send-money")}
               className="p-4 w-[300px] border-3 text-blue-700 border-blue-700  rounded-lg"
             >
               Get Started
@@ -155,7 +153,7 @@ const Home = () => {
               <span className="font-bold">{formatCurrency(countries[from]?.currencyCode,1)}</span> = <span className="font-bold">{loading?<Spinner size="sm" color="primary" />:formatCurrency(countries[to]?.currencyCode,storeData?.exchangeRate)}</span> 
               </div>}
                 <button
-                  onClick={() => navigate("/home/transfer")}
+                  onClick={() => navigate("/home/send-money")}
                   className="bg-[#BAD477] w-full text-white py-2 px-1 transition-all hover:scale-105 my-5 rounded-3xl"
                 >
                   Send money
@@ -171,57 +169,4 @@ const Home = () => {
 };
 
 export default Home;
-const SelectCountries = ({ indacator }) => {
-  const [open, setOpen] = useState(false);
-  const [to, from, updateData] = useTransaction(
-    useShallow((state) => [state.data.to, state.data.from, state.updateData])
-  );
-  const data = indacator === "from" ? from : to;
 
-
-
-  return (
-    <Popover
-      isOpen={open}
-      onOpenChange={setOpen}
-      placement="bottom-end"
-      showArrow={true}
-    >
-      <PopoverTrigger>
-        <Button className="bg-inherit bordered">
-          <CountryFlag
-            rounded
-            code={countriesData[data]?.code}
-            className=" rounded-md w-10 h-7"
-          />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="sm:max-w-[500px] md:max-w-[600px] lg:max-w-[700px]">
-        <div className="px-4 py-2 w-[200px] gap-4 grid grid-cols-1 overflow-y-scroll  custom-scrollbar">
-          {countriesData.map((country, index) =>
-            index === (indacator === "from" ? to : from) ? null : (
-              <Button
-                key={index}
-                onPress={() => {
-                  updateData({ [indacator]: index });
-                  setOpen(false);
-                }}
-                className={`flex flex-col h-11 gap-1 items-stretch rounded-md hover:bg-primary-500 hover:text-white ${data === index && "border-2 border-primary-500"}
-                `}
-              >
-                <div className="flex flex-row gap-2 items-center">
-                  <CountryFlag
-                    rounded
-                    code={country.code}
-                    className="h-7 w-7"
-                  />
-                  <p className="text-sm font-medium">{country.name}</p>
-                </div>
-              </Button>
-            )
-          )}
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-};

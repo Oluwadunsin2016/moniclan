@@ -26,6 +26,7 @@ const OTPVerification = () => {
       navigate(-1);
     }
   },[type,navigate])
+  
   const verifyOTP = async (code) => {
     await verify(
       { code: `${code}`, email,type },
@@ -40,7 +41,8 @@ const OTPVerification = () => {
             });
             sessionStorage.removeItem("email")
             setOtp("");
-            navigate("/home");
+            // navigate("/home");
+            navigate("/");
           }
         },
         onError: (error) => {

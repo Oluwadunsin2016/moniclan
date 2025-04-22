@@ -19,7 +19,9 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const storedToken = localStorage.getItem("token");
   const isPublicRoute =
-  ["/", "/sign-in", "/sign-up"].includes(location.pathname) ||
+  // ["/", "/sign-in", "/sign-up"].includes(location.pathname) ||
+  // location.pathname.startsWith("/verification");
+  ["/sign-in", "/sign-up"].includes(location.pathname) ||
   location.pathname.startsWith("/verification");
 
   // ✅ Check token expiry BEFORE making API request
@@ -75,7 +77,8 @@ export const AuthProvider = ({ children }) => {
       //   navigate("/home");
       // }
       if (recentUser && isPublicRoute) {
-        navigate("/home", { replace: true });
+        // navigate("/home", { replace: true });
+        navigate("/", { replace: true });
       }
       // if (location.pathname === "/sign-in"||location.pathname === "/sign-up") {
       //   navigate(-1);
@@ -111,15 +114,16 @@ export const AuthProvider = ({ children }) => {
     console.log("token", token);
     localStorage.setItem("token", token);
     setUser(user);
-    notifier({ message: "Logged in successfully", type: "success" });
-    navigate("/home");
+    // notifier({ message: "Logged in successfully", type: "success" });
+    // navigate("/home");
+    navigate("/");
     startTokenExpirationCheck(token);
   };
 
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
-    navigate("/", { replace: true });
+    // navigate("/sign-in", { replace: true });
   };
 
   return (

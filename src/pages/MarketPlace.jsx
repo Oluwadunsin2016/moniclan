@@ -1,11 +1,19 @@
+/* eslint-disable react/prop-types */
 import { useState } from 'react';
 import { FiSearch, FiHeart, FiStar } from 'react-icons/fi';
+import { countries } from '../libs/constants';
+import { Button, Popover, PopoverContent, PopoverTrigger } from '@nextui-org/react';
+import CountryFlag from '../components/ui/CountryFlag';
 
 const MarketplacePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [wishlist, setWishlist] = useState([]);
+  const uniqueCountries = Array.from(new Map(countries.map(c => [c.code, c])).values());
+  const [selectedCountry, setSelectedCountry]=useState(uniqueCountries[2])
+  console.log(selectedCountry);
+ 
 
   // Sample product data
   const products = [
@@ -193,9 +201,14 @@ const MarketplacePage = () => {
     <div className="bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         {/* Marketplace Header */}
+        <div className='flex justify-between items-center gap-6'>
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-800 mb-2">Marketplace</h1>
           <p className="text-gray-600">Discover amazing products from our community</p>
+        </div>
+        <div className="border rounded-lg">
+                  <Countries selectedCountry={selectedCountry} setSelectedCountry={setSelectedCountry} uniqueCountries={uniqueCountries} />
+                </div>
         </div>
 
         {/* Search and Categories */}
@@ -329,3 +342,58 @@ const MarketplacePage = () => {
 };
 
 export default MarketplacePage;
+
+
+
+const Countries=( {uniqueCountries,selectedCountry,setSelectedCountry})=>{
+      const [open, setOpen] = useState(false);
+     
+      
+
+  return (
+    <div>
+           <Popover
+                  isOpen={open}
+                  onOpenChange={setOpen}
+                  placement="bottom-end"
+                  showArrow={true}
+                  
+                >
+                  <PopoverTrigger>
+                    <Button className="bg-inherit bordered">
+                      <CountryFlag
+                        rounded
+                        code={selectedCountry?.code}
+                        className=" rounded-md w-10 h-7"
+                      />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="sm:max-w-[500px] md:max-w-[600px] lg:max-w-[700px]">
+                    <div className="px-4 py-2 w-[200px] gap-4 grid grid-cols-1 overflow-y-scroll  custom-scrollbar">
+                      {uniqueCountries?.map((country, index) => (
+                          <Button
+                            key={index}
+                            onPress={() => {
+                              setSelectedCountry(country);
+                              setOpen(false);
+                            }}
+                            className={`flex flex-col h-11 gap-1 items-stretch rounded-md hover:bg-primary-500 hover:text-white ${country.code === selectedCountry.code && "border-2 border-primary-500"}
+                            `}
+                          >
+                            <div className="flex flex-row gap-2 items-center">
+                              <CountryFlag
+                                rounded
+                                code={country.code}
+                                className="h-7 w-7"
+                              />
+                              <p className="text-sm font-medium">{country.name}</p>
+                            </div>
+                          </Button>
+                        )
+                      )}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+    </div>
+  )
+}

@@ -10,7 +10,7 @@ import { useDataStore } from '../../store/Global';
 import { useMakeTransaction } from '../../apis/transaction';
 
 
-const PaymentModal = ({ isOpen, onClose,amount,service}) => {
+const PaymentModal = ({ isOpen, onClose,handleComplete}) => {
     const [loading, setLoading] = useState(false)
     const [isVerifying, setIsVerifying] = useState(false)
     const [isCopied, setIsCopied] = useState(false);
@@ -94,6 +94,7 @@ console.log(data);
 await makePayment(data,{
   onSuccess:()=>{
     notifier({message:'Transaction successful',type:'success'})
+    handleComplete()
     clearData()
     onClose()
   },
