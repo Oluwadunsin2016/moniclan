@@ -15,6 +15,8 @@ import { useAuth } from "../lib/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaHandPointer } from "react-icons/fa";
 import AuthModal from "./shared/AuthModal";
+import { GrHistory } from "react-icons/gr";
+
 
 export const AcmeLogo = () => {
   return (
@@ -112,7 +114,7 @@ export default function Nav() {
           }
           items={[
             {text: 'Profile', icon: <TbUsers size="18"/>},
-            {text: 'Transaction History', icon: <TbLogout size="18"/>, onClick:()=>navigate('/transaction-history')},
+            {text: 'Transaction History', icon: <GrHistory size="16"/>, onClick:()=>navigate('/transaction-history')},
             {text: 'Logout', icon: <TbLogout size="18"/>, onClick: logout},
           ]}
         />

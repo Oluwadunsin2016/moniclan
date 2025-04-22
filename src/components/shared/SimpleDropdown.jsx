@@ -43,7 +43,7 @@ const SimpleDropdown = ({ trigger, items, direction = "bottom-right" }) => {
                 animate="visible"
                 exit="exit"
                 static
-                className={`absolute bg-white text-gray-900 shadow p-2 rounded-xl flex flex-col z-50 min-w-[200px] ${
+                className={`absolute bg-white text-gray-900 shadow p-2 rounded-xl outline-none border flex flex-col z-50 min-w-[200px] ${
                   direction === "bottom-right" && "top-full right-0 mt-2"
                 }
                     ${direction === "top-right" && "bottom-full right-0 mb-2"}
