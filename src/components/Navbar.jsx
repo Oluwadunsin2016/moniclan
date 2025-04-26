@@ -13,7 +13,7 @@ import { TbChevronDown, TbLogout, TbUsers } from "react-icons/tb";
 import SimpleDropdown from './shared/SimpleDropdown';
 import { useAuth } from "../lib/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaHandPointer } from "react-icons/fa";
+// import { FaHandPointer } from "react-icons/fa";
 import AuthModal from "./shared/AuthModal";
 import { GrHistory } from "react-icons/gr";
 
@@ -119,11 +119,11 @@ export default function Nav() {
           ]}
         />
         </NavbarItem>:    <NavbarItem className="flex px-3 py-1 rounded-md border border-[#2c5e9b]">
-              <div className="relative">
+              {/* <div className="relative">
             <div className="absolute -bottom-10 -left-8 -translate-x-1/2 animate-bounce z-10">
             <FaHandPointer size={25} className="rotate-45 text-gray-600" />
             </div>
-          </div>
+          </div> */}
               <Link to="#" onClick={onOpen}>Sign in</Link>
             </NavbarItem>}
         </div>      

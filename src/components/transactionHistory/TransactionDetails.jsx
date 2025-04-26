@@ -122,7 +122,7 @@ const TransactionDetails = ({goBack,transaction}) => {
               <p className="font-medium">{transaction?.service}</p>
             </div>}
             {transaction?.dueDate &&  <div className="mb-4">
-              <p className="text-sm font-medium text-gray-500">Expiration Date</p>
+              <p className="text-sm font-medium text-gray-500">Due Date</p>
               <p className="font-medium">{new Date(transaction?.dueDate).toLocaleDateString()}</p>
             </div>}
           </div>
