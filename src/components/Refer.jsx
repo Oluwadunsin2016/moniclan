@@ -11,7 +11,7 @@ const Refer = () => {
 
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(`http://localhost:5175/?referralCode=${user?.referralCode}`);
+    navigator.clipboard.writeText(`https://moniclan.com/?referralCode=${user?.referralCode}`);
     setIsCopied(true);
     setTimeout(() => {
       setIsCopied(false);
