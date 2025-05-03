@@ -153,7 +153,7 @@ const Home = () => {
               <span className="font-bold">{formatCurrency(countries[from]?.currencyCode,1)}</span> = <span className="font-bold">{loading?<Spinner size="sm" color="primary" />:formatCurrency(countries[to]?.currencyCode,storeData?.exchangeRate)}</span> 
               </div>}
                 <button
-                  onClick={() => navigate("/home/send-money")}
+                  onClick={() => navigate("/send-money")}
                   className="bg-[#BAD477] w-full text-white py-2 px-1 transition-all hover:scale-105 my-5 rounded-3xl"
                 >
                   Send money
