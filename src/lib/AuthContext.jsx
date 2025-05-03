@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { createContext, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useGetProfile } from "../apis/auth";
 import socket from "./socket";
@@ -18,6 +18,8 @@ export const AuthProvider = ({ children }) => {
   const location = useLocation();
   const [user, setUser] = useState(null);
   const storedToken = localStorage.getItem("token");
+  const [searchParams] = useSearchParams();
+  const referralCode = searchParams.get('referralCode');
   const isPublicRoute =
   // ["/", "/sign-in", "/sign-up"].includes(location.pathname) ||
   // location.pathname.startsWith("/verification");
@@ -125,6 +127,12 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     // navigate("/sign-in", { replace: true });
   };
+
+  useEffect(() => {
+    if (referralCode) {
+      sessionStorage.setItem("referralCode", referralCode);
+    }
+  }, [])
 
   return (
     <AuthContext.Provider value={{ user, authenticate, logout, isReloading: isRefetching }}>

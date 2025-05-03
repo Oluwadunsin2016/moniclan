@@ -20,9 +20,10 @@ export function SignUp({onClose}) {
   const password = watch("password");
 
   const submit = async (values) => {
+    const referredBy = sessionStorage.getItem("referralCode");
     try {
       delete values.confirmPassword;
-      const {data}= await signup({...values,role:'user'});
+      const {data}= await signup(referredBy?{...values,role:'user',referredBy}:{...values,role:'user'});
       sessionStorage.setItem('email',data.user.email)
       onClose()
       navigate('/verification/?type=register');

@@ -5,7 +5,10 @@ import { Outlet } from 'react-router-dom';
 import { Footer } from '../components/shared/Footer';
 import Nav from '../components/Navbar';
 import ChatSupportButton from '../components/ChatSupportButton';
+import Refer from '../components/Refer';
+import { useAuth } from '../lib/AuthContext';
 const RootLayout = () => {
+  const { user } = useAuth();
   return (
     <div>
           <Nav />
@@ -13,6 +16,7 @@ const RootLayout = () => {
      <Outlet/>
           </div>
           <ChatSupportButton/>
+        {user && <Refer/>}
       <Footer/>
     </div>
   )
