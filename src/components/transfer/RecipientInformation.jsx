@@ -15,29 +15,40 @@ const RecipientInformation = ({ goNext,editMode }) => {
     lastName: "",
   });
 
-const ContinueToNext = () => {
-  console.log("accountDetails:", data.recipient_accountDetails);
-  console.log("user:", user);
-
-  // Split the account name into an array of individual names
-  const accountNameParts = data.recipient_accountDetails?.account_name?.toLowerCase().split(" ") || [];
-  const firstName = user?.firstName?.toLowerCase();
-  const lastName = user?.lastName?.toLowerCase();
-
-  // Check if firstName and lastName match any part of the account name
-  if (accountNameParts.includes(firstName) && accountNameParts.includes(lastName)) {
+  const ContinueToNext = () => {
+    console.log("accountDetails:", data.recipient_accountDetails);
+    console.log("user:", user);
+  
+    const accountNameParts = data.recipient_accountDetails?.account_name?.toLowerCase().split(" ") || [];
+    const firstName = user?.firstName?.toLowerCase();
+    const lastName = user?.lastName?.toLowerCase();
+  
+    const accountFirstName = accountNameParts[0]; // First word
+    const accountLastName = accountNameParts[accountNameParts.length - 1]; // Last word
+  
+    if (firstName !== accountFirstName) {
+      setIsAccountNameMatched({
+        message: "The first name you provided does not match the account first name",
+        status: false,
+      });
+      return;
+    }
+  
+    if (lastName !== accountLastName) {
+      setIsAccountNameMatched({
+        message: "The last name you provided does not match the account last name",
+        status: false,
+      });
+      return;
+    }
+  
     setIsAccountNameMatched({
       message: "The name you provided is correct",
       status: true,
     });
     goNext();
-  } else {
-    setIsAccountNameMatched({
-      message: "The name you provided does not match the account name",
-      status: false,
-    });
-  }
-};
+  };
+  
 
   return (
     <div className={`${!editMode&&'min-h-screen'} flex flex-col p-8 bg-white`}>

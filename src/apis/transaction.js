@@ -15,6 +15,21 @@ export const useMakeTransaction = () => {
       },
     });
   };
+
+export const useCreateStripePayment = () => {
+    const queryClient = useQueryClient();
+  
+    return useMutation({
+      mutationFn: async(payload) => await http.post('/transactions/stripe-payment', payload),
+      onSuccess: (_, payload) => {
+        if (payload?.senderDetails?._id) {
+          queryClient.invalidateQueries({
+            queryKey: ['activeSubscription', payload.senderDetails._id,'transactions',payload?.senderDetails?.email],
+          });
+        }
+      },
+    });
+  };
   
 
   export const useGetUserTransactions=(email)=>{

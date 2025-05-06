@@ -19,9 +19,9 @@ const Refer = () => {
 };
 
   return (
-  <div className="fixed right-12 bottom-1/2 z-50">
+  <>
 <Button radius="full" color="primary" onPress={handleCopy}>{isCopied? <span className="flex items-center gap-1">Link copied <IoMdCheckmark size={18} /></span> :'Refer us and Earn'}</Button>
-  </div>
+  </>
   );
 };
 

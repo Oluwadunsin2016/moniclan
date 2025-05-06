@@ -6,7 +6,7 @@ import { FaCcVisa } from "react-icons/fa";
 import { FaSync } from "react-icons/fa";
 import { PaystackButton } from "react-paystack";
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, Spinner, } from "@nextui-org/react";
-import { Select } from "antd";
+import { DatePicker, Select } from "antd";
 import PaymentModal from "../components/hub/PaymentModal";
 import { useCalculateCurrencyMutation } from "../apis/calculate";
 import { useAuth } from "../lib/AuthContext";
@@ -16,12 +16,17 @@ import FileUpload from "../components/shared/FileUpload";
 import { useCancelSubscription, useGetActiveSubscription } from "../apis/transaction";
 import { services } from "../lib/data";
 import axios from "axios";
+import StripeModal from "../components/hub/StripeModa";
+import SuccessModal from "../components/hub/SuccessModal";
 
 const PaymentHubPage = () => {
   const { user } = useAuth();
   const [isLoading,setIsLoading]=useState(false)
+  const [isStripeLoading,setIsStripeLoading]=useState(false)
   const [service, setService] = useState("");
   const [plan, setPlan] = useState("onetime-off");
+  const [period, setPeriod] = useState("");
+  const [startDate, setStartDate] = useState("");
   const [usdAmount, setUsdAmount] = useState('');
   const [checkoutLink, setCheckoutLink] = useState("");
   const [isOpen, setIsOpen] = useState(false)
@@ -30,6 +35,9 @@ const [exchangeRate, setExchangeRate] = useState('')
 const [idCard, setIdCard] = useState('')
 const [bvn, setIdBvn] = useState('')
 const [error, setError] = useState("");
+const [isModalOpen, setIsModalOpen] = useState(false);
+const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+
   
 const {data}=useGetActiveSubscription(user?._id)
 
@@ -49,8 +57,8 @@ const {data}=useGetActiveSubscription(user?._id)
   // }
 
   console.log("nairaAmount:",nairaAmount);
-  const notAvailable=plan=="onetime-off"?!bvn:!idCard || !bvn
-  const disable=!service || !nairaAmount || notAvailable || error
+  const notAvailable=plan=="onetime-off"?!bvn:!idCard || !bvn || !period
+  const disable=!service || !nairaAmount || !startDate || notAvailable || error
 
   // useEffect(() => {
   //   const fetchExchangeRate = async () => {
@@ -72,6 +80,8 @@ const {data}=useGetActiveSubscription(user?._id)
       exchangeRate,
       plan,
       bvn,
+      startDate,
+      period,
       reason:'Payment for service',
       type:'Payment Hub',
       recipient_accountDetails: {
@@ -83,7 +93,7 @@ const {data}=useGetActiveSubscription(user?._id)
       },
       senderDetails: user,
     });
-  }, [service,nairaAmount,plan,bvn])
+  }, [service,nairaAmount,plan,bvn,period,startDate])
 
 
   
@@ -112,6 +122,10 @@ const {data}=useGetActiveSubscription(user?._id)
 const handleSelect=(e)=>{
 console.log("Selected plan:", e);
 setPlan(e)
+}
+const handleSelectPeriod=(e)=>{
+console.log("Selected period:", e);
+setPeriod(e)
 }
 
 const handleSelectService=(e)=>{
@@ -154,6 +168,25 @@ if (idCard) {
 }
 
 
+const handleStripePaymentOpen=async()=>{
+  if (!user) return  notifier({message:'Sign in to continue the transactions',type:'error'})
+  try {
+if (idCard) {
+  setIsStripeLoading(true)
+  const formData = new FormData()
+  formData.append('media',idCard)
+  const response = await axios.post('https://backendurl.cittis.co/user/upload_media',formData)
+  console.log(response.data.data);
+  updateData({idCard:response.data.data})
+  setIsStripeLoading(false)
+}
+setIsModalOpen(true) 
+  } catch (error) {
+    notifier({message:'An error occurred while uploading Id card',type:'error'})
+  }
+}
+
+
 
 
 
@@ -175,6 +208,12 @@ const handleBlur = () => {
     setError("");
   }
 };
+const onChange = (_, dateString) => {
+  console.log(dateString);
+  
+  setStartDate(dateString);
+}
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-4">
@@ -220,6 +259,37 @@ const handleBlur = () => {
           />
 
 <div>
+
+{plan!=='onetime-off' &&  <div>
+
+  <label className="block mt-4 font-medium text-gray-700">
+            Period
+          </label>
+          <Select
+            style={{
+              width: "100%",
+            }}
+            placeholder="Please select plan"
+            value={period}
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+            name="period"
+            size="large"
+            className="w-full"
+            onChange={(e) => handleSelectPeriod(e)}
+            options={[{value:'3', label:'Three Months'},{value:'6', label:'Six Months'},{value:'12', label:'Twelve Months'}]}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          />
+  </div>}
+
+<label className="block mt-4 font-medium text-gray-700">
+            Start date
+          </label>
+<DatePicker    style={{
+              width: "100%",
+              height: '40px'
+            }} onChange={onChange} />
 <label className="block mt-4 font-medium text-gray-700">
             BVN
           </label>
@@ -320,18 +390,26 @@ const handleBlur = () => {
         />
 
         {/* Paystack Payment Button */}
-        <div className="mt-6 flex flex-col gap-2">
+        <div className="mt-6 flex flex-col gap-4">
           <PaystackButton
             {...componentProps}
             disabled={disable}
             className="w-full bg-green-600 disabled:bg-green-300 disabled:cursor-not-allowed text-white p-2 rounded-lg hover:bg-green-700 transition"
           />
+
+          <Button isDisabled={disable} onPress={handleStripePaymentOpen} className="w-full text-center bg-blue-700 text-white p-2 rounded-lg hover:bg-blue-800 transition">
+          
+           {isStripeLoading? <span className="flex items-center gap-2 justify-center"><Spinner size="sm" color="white" /> Please wait...</span> :" Pay with Stripe"}
+          </Button>
+          
           <Button isDisabled={disable} onPress={handleMakeTransfer} className="w-full text-center bg-gray-700 text-white p-2 rounded-lg hover:bg-gray-800 transition">
            {isLoading? <span className="flex items-center gap-2 justify-center"><Spinner size="sm" color="white" /> Please wait...</span> :"Pay with transfer"}
           </Button>
         </div>
 
         <PaymentModal handleComplete={handleComplete} isOpen={isOpen} onClose={()=>setIsOpen(false)} />
+        <StripeModal handleComplete={handleComplete} onOpenSuccess={() => setIsSuccessModalOpen(true)} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <SuccessModal isOpen={isSuccessModalOpen} onClose={() => setIsSuccessModalOpen(false)} />
       </div>
     </div>
   );

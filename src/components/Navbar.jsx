@@ -10,13 +10,13 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { TbChevronDown, TbLogout, TbUsers } from "react-icons/tb";
-import SimpleDropdown from './shared/SimpleDropdown';
+import SimpleDropdown from "./shared/SimpleDropdown";
 import { useAuth } from "../lib/AuthContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 // import { FaHandPointer } from "react-icons/fa";
 import AuthModal from "./shared/AuthModal";
 import { GrHistory } from "react-icons/gr";
-
+import Refer from "./Refer";
 
 export const AcmeLogo = () => {
   return (
@@ -34,9 +34,9 @@ export const AcmeLogo = () => {
 export default function Nav() {
   const { user, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
-  const {pathname}=useLocation()
-  const navigate =useNavigate()
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   // const menuItems = [
   //     {
@@ -57,84 +57,120 @@ export default function Nav() {
   //     },
   // ];
   const menuItems = [
-      {
-        name:"Send Money",
-        href:"/send-money"
-      },
-      // {
-      //   name:"Payment Hub(USD)",
-      //   href:"/hub"
-      // },
-      {
-        name:"Bill Ease",
-        href:"/bill"
-      },
-      {
-        name:"Marketplace",
-        href:"/marketplace"
-      },
-      {
-        name:"Express Delivery",
-        href:"/express-delivery"
-      },
+    {
+      name: "Send Money",
+      href: "/send-money",
+    },
+    // {
+    //   name:"Payment Hub(USD)",
+    //   href:"/hub"
+    // },
+    {
+      name: "Bill Ease",
+      href: "/bill",
+    },
+    {
+      name: "Marketplace",
+      href: "/marketplace",
+    },
+    {
+      name: "Express Delivery",
+      href: "/express-delivery",
+    },
   ];
 
   return (
-    <Navbar isBordered className="h-[60px] bg-white" isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
-        <NavbarContent className="pr-3" justify="start">
-      <NavbarMenuToggle className="sm:hidden" aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
+    <Navbar
+      isBordered
+      className="h-[60px] bg-white"
+      isMenuOpen={isMenuOpen}
+      onMenuOpenChange={setIsMenuOpen}
+    >
+      <NavbarContent className="pr-3" justify="start">
+        <NavbarMenuToggle
+          className="sm:hidden"
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+        />
         <NavbarBrand>
           <Link to="/" className="flex items-center gap-2">
-          <AcmeLogo />
-          <p className="font-bold text-inherit">MONICLAN</p>
+            <AcmeLogo />
+            <p className="font-bold text-inherit">MONICLAN</p>
           </Link>
         </NavbarBrand>
       </NavbarContent>
 
       <NavbarContent justify="end">
         <div className="flex gap-10">
-          {
-            menuItems.map((item, index) => (
-              <NavbarItem key={`${item.name}-${index}`} className="relative hidden lg:block">
-                <Link       className={`text-blue-700 pb-2 relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-full after:h-[2px] after:bg-blue-700 after:transition-transform after:duration-300 after:ease-in-out after:scale-x-0 after:origin-center ${
-      pathname === item.href ? 'after:scale-x-100' : ''
-    }`} to={item.href}>
-                  {item.name}
-                </Link>
-              </NavbarItem>
-            ))
-          }
-       {user ? <NavbarItem>
-         <SimpleDropdown
-          trigger={
-            <div className="flex items-center gap-2">
-             <p className="font-bold max-w-[150px] truncate">Hi {user?.firstName} {user?.lastName}</p>
-              <TbChevronDown size="18"/>
-            </div>
-          }
-          items={[
-            {text: 'Profile', icon: <TbUsers size="18"/>},
-            {text: 'Transaction History', icon: <GrHistory size="16"/>, onClick:()=>navigate('/transaction-history')},
-            {text: 'Logout', icon: <TbLogout size="18"/>, onClick: logout},
-          ]}
-        />
-        </NavbarItem>:    <NavbarItem className="flex px-3 py-1 rounded-md border border-[#2c5e9b]">
+          {menuItems.map((item, index) => (
+            <NavbarItem
+              key={`${item.name}-${index}`}
+              className="relative hidden lg:block"
+            >
+              <Link
+                className={`text-blue-700 pb-2 relative after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-full after:h-[2px] after:bg-blue-700 after:transition-transform after:duration-300 after:ease-in-out after:scale-x-0 after:origin-center ${
+                  pathname === item.href ? "after:scale-x-100" : ""
+                }`}
+                to={item.href}
+              >
+                {item.name}
+              </Link>
+            </NavbarItem>
+          ))}
+          {user && (
+            <NavbarItem className="hidden md:block">
+              <Refer />
+            </NavbarItem>
+          )}
+          {user ? (
+            <NavbarItem>
+              <SimpleDropdown
+                trigger={
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold max-w-[150px] truncate">
+                      Hi {user?.firstName} {user?.lastName}
+                    </p>
+                    <TbChevronDown size="18" />
+                  </div>
+                }
+                items={[
+                  { text: "Profile", icon: <TbUsers size="18" /> },
+                  {
+                    text: "Transaction History",
+                    icon: <GrHistory size="16" />,
+                    onClick: () => navigate("/transaction-history"),
+                  },
+                  {
+                    text: "Logout",
+                    icon: <TbLogout size="18" />,
+                    onClick: logout,
+                  },
+                ]}
+              />
+            </NavbarItem>
+          ) : (
+            <NavbarItem className="flex px-3 py-1 rounded-md border border-[#2c5e9b]">
               {/* <div className="relative">
             <div className="absolute -bottom-10 -left-8 -translate-x-1/2 animate-bounce z-10">
             <FaHandPointer size={25} className="rotate-45 text-gray-600" />
             </div>
           </div> */}
-              <Link to="#" onClick={onOpen}>Sign in</Link>
-            </NavbarItem>}
-        </div>      
+              <Link to="#" onClick={onOpen}>
+                Sign in
+              </Link>
+            </NavbarItem>
+          )}
+        </div>
       </NavbarContent>
 
       <NavbarMenu className="mt-5">
         {menuItems.map((item, index) => (
-          <NavbarMenuItem onClick={()=>setIsMenuOpen(false)} key={`${item.name}-${index}`}>
+          <NavbarMenuItem
+            onClick={() => setIsMenuOpen(false)}
+            key={`${item.name}-${index}`}
+          >
             <Link
               className="w-full text-blue-700 hover:text-blue-800 font-bold"
-              color={ "foreground"  }
+              color={"foreground"}
               to={item.href}
               size="lg"
             >
@@ -142,8 +178,18 @@ export default function Nav() {
             </Link>
           </NavbarMenuItem>
         ))}
+          {user && (
+            <NavbarItem className="block md:hidden">
+              <Refer />
+            </NavbarItem>
+          )}
       </NavbarMenu>
-      <AuthModal onOpenChange={onOpenChange} isOpen={isOpen} user={user} onClose={onClose}/>
+      <AuthModal
+        onOpenChange={onOpenChange}
+        isOpen={isOpen}
+        user={user}
+        onClose={onClose}
+      />
     </Navbar>
   );
 }
