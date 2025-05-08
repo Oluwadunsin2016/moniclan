@@ -1,14 +1,40 @@
 /* eslint-disable react/prop-types */
 import { useDataStore } from '../../store/Global'
 import { Button, Input } from '@nextui-org/react'
+import { useState } from 'react'
 import { BsPhoneFill } from 'react-icons/bs'
 import { MdLock } from 'react-icons/md'
 
 const SenderContact = ({goNext,editMode}) => {
+    const [error, setError] = useState("");
   const {data,updateData}=useDataStore()
 const ContinueToNext=()=>{
 goNext()
 }
+
+const handleChange = (e) => {
+  const value = e.target.value;
+
+  // Only allow digits
+  if (!/^\d*$/.test(value)) return;
+
+  // setPhoneNumber(value);
+
+  updateData({
+    recipient_accountDetails: {
+      ...data.senderDetails,
+      phone_number: value,
+    },
+  });
+
+  // Simple validation for Nigerian number (11 digits)
+  if (value && value.length !== 11) {
+    setError("Phone number must be exactly 11 digits");
+  } else {
+    setError("");
+  }
+};
+
   return (
                  <div className={`${!editMode&&'min-h-screen'} flex flex-col p-8 bg-white`}>
                   {!editMode &&
@@ -19,14 +45,17 @@ goNext()
       <div className="w-full">
       <div>
       <label htmlFor="" className='mb-4 ms-2 text-lg'>Phone number</label>
-       <Input
-        size='lg'
-          type="tel"
-          placeholder="08134565437"
-          className='rounded-md'
-          value={data?.senderDetails?.phone_number}
-          onChange={(e)=>updateData({senderDetails:{...data?.senderDetails,phone_number: e.target.value}})}
-        />
+        <Input
+        size="lg"
+        type="tel"
+        max={11}
+        placeholder="08134565437"
+        value={data?.senderDetails?.phone_number}
+        isInvalid={!!error}
+        errorMessage={error}
+        className="rounded-md"
+        onChange={handleChange}
+      />
       </div>
 
 {!editMode

@@ -11,8 +11,14 @@ import { useDataStore } from "../../store/Global";
 import { useMakeTransaction } from "../../apis/transaction";
 import { notifier } from "../../lib/utils";
 import { LiaSpinnerSolid } from "react-icons/lia";
+import PaymentModal from "../hub/PaymentModal";
+import StripeModal from "../hub/StripeModa";
+import SuccessModal from "../hub/SuccessModal";
 
 const Preview = ({completed}) => {
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {data,clearData}=useDataStore()
   const scrollContainerRef = useRef(null);
   const [showScrollButton, setShowScrollButton] = useState(true);
@@ -53,23 +59,35 @@ const Preview = ({completed}) => {
   }, []);
 
   const handleSubmit=async()=>{
-    const {card_details,...rest}=data
-    const payload={
-      ...rest, type:'Transfer'
+    console.log(data);
+    
+    if(data.paymentMethod==="Transfer"){
+      setIsPaymentModalOpen(true)
+      return
+    }else{
+      setIsModalOpen(true)
     }
-await makePayment(payload,{
-  onSuccess:()=>{
-    notifier({message:'Transaction successful',type:'success'})
+//     const {card_details,...rest}=data
+//     const payload={
+//       ...rest, type:'Transfer'
+//     }
+// await makePayment(payload,{
+//   onSuccess:()=>{
+//     notifier({message:'Transaction successful',type:'success'})
+//     clearData()
+//     completed()
+//   },
+//   onError:(error)=>{
+//     notifier({message:error.response.message??'There is an error making the transaction',type:'error'})
+//     console.log(error);
+//   }
+// })
+  }
+
+  
+  const handleComplete=()=>{
     clearData()
-    completed()
-  },
-  onError:(error)=>{
-    notifier({message:error.response.message??'There is an error making the transaction',type:'error'})
-    console.log(error);
   }
-})
-  }
-console.log(data);
 
 
   return (
@@ -119,7 +137,9 @@ console.log(data);
         <IoMdArrowDown size={24} />
       </button>
       }
-
+ <PaymentModal handleComplete={handleComplete} isOpen={isPaymentModalOpen} onClose={()=>setIsPaymentModalOpen(false)} />
+    <StripeModal handleComplete={handleComplete} onOpenSuccess={() => setIsSuccessModalOpen(true)} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+          <SuccessModal isOpen={isSuccessModalOpen} onClose={() => setIsSuccessModalOpen(false)} />
 <InfoUpdateModal onOpenChange={onOpenChange} isOpen={isOpen} onClose={onClose}/>
       </div>
   );

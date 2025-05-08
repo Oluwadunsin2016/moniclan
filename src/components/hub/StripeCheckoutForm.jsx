@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { useStripe, PaymentElement, useElements } from '@stripe/react-stripe-js';
 import { useCreateStripePayment, useMakeTransaction } from '../../apis/transaction';
-import { notifier } from '../../lib/utils';
+import { formatCurrency, notifier } from '../../lib/utils';
 import { Button } from '@nextui-org/react';
 
 const StripeCheckoutForm = ({payload, clearData, onClose,onOpenSuccess, handleComplete}) => {
@@ -70,7 +70,7 @@ const StripeCheckoutForm = ({payload, clearData, onClose,onOpenSuccess, handleCo
         disabled={!stripe || !elements}
         className="w-full mt-10 mb-4"
       >
-        Pay ${Number(payload?.amount).toFixed(2)}
+        Pay {formatCurrency('NGN',Number(payload?.convertedAmount).toFixed(2))}
       </Button>
     </form>
   );

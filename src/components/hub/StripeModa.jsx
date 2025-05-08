@@ -14,8 +14,8 @@ const StripeModal = ({ isOpen, onClose,onOpenSuccess,handleComplete }) => {
 
     const stripeOptions = {
       mode: 'payment',
-      amount: Math.round(data?.amount * 100),
-      currency: 'usd',
+      amount: Math.round(data?.convertedAmount * 100),
+      currency: 'ngn',
       appearance: {},
     };
     return (

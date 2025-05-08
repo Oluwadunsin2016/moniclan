@@ -37,11 +37,22 @@ const AmountDelivery = ({onOpen}) => {
         <div className="flex justify-between items-center">
             <div>
               <p className="text-sm">Delivery Method</p>
-              <span className="font-semibold">{data?.paymentMethod??'N/A'}</span>
+              <span className="font-semibold">{data?.deliveryMethod??'N/A'}</span>
             </div>
 
           <Tooltip content='Edit'>
           <CiEdit size={28} className="cursor-pointer" onClick={()=>handleEdit('Delivery Method')} />
+          </Tooltip>
+        </div>
+        <hr />
+        <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm">Payment Method</p>
+              <span className="font-semibold">{data?.paymentMethod??'N/A'}</span>
+            </div>
+
+          <Tooltip content='Edit'>
+          <CiEdit size={28} className="cursor-pointer" onClick={()=>handleEdit('Payment Method')} />
           </Tooltip>
         </div>
         <hr />

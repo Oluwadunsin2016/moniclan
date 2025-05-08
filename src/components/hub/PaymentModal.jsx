@@ -111,7 +111,7 @@ await makePayment(data,{
         // }, 2000)
     }
   return (
-    <Modal placement="center" size="xl" isOpen={isOpen} onOpenChange={onClose}>
+    <Modal placement="center" size="xl" isOpen={isOpen} onOpenChange={onClose} backdrop="blur" >
       <ModalContent>
         <ModalBody>
         {loading? <div className='h-[15rem] flex items-center justify-center'><ImSpinner8 size={40} color='blue' className='animate-spin' />
@@ -155,12 +155,12 @@ await makePayment(data,{
    <div className="mt-4">
   {/* <h3 className="text-lg font-medium text-gray-700">service</h3> */}
   <div className=" bg-gray-50 p-4 rounded-lg space-y-2">
-    <div className="flex justify-between gap-6 items-center">
+   {data?.service && <div className="flex justify-between gap-6 items-center">
       <span className="text-sm text-gray-500">Service</span>
       <span className="text-sm text-gray-800 line-clamp-1">
-        {data?.service}
+        {data?.service?? 'N/A'}
       </span>
-    </div>
+    </div>}
       <div className="flex justify-between gap-6 items-center">
       <span className="text-sm text-gray-500">Amount </span>
       <span className="font-medium text-gray-800 line-clamp-1">

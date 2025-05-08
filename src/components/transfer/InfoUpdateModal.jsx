@@ -18,6 +18,7 @@ import SenderContact from "./SenderContact";
 import RecipientInformation from "./RecipientInformation";
 import RecipientNotification from "./RecipientNotification";
 import SenderReason from "./SenderReason";
+import PaymentMethod from "./PaymentMethod";
 
 const InfoUpdateModal = ({ onOpenChange, isOpen, onClose,}) => {
   const {editMode,setEditMode}=useDataStore()
@@ -39,6 +40,7 @@ const InfoUpdateModal = ({ onOpenChange, isOpen, onClose,}) => {
       {editMode.fieldName=='Account Number' && <RecipientAccountDetails editMode={editMode.status} />}
       {editMode.fieldName=='Sender Details' && <SenderInformation editMode={editMode.status} />}
       {editMode.fieldName=='Sender Address' && <SenderAddress editMode={editMode.status} />}
+      {editMode.fieldName=='Payment Method' && <PaymentMethod editMode={editMode.status} />}
       {editMode.fieldName=='Sender Contact' && <SenderContact editMode={editMode.status} />}
       {editMode.fieldName=='Recipient Details' && <RecipientInformation editMode={editMode.status} />}
       {editMode.fieldName=='Recipient Contact' && <RecipientNotification editMode={editMode.status} />}

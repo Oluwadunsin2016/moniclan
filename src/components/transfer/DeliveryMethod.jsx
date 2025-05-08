@@ -6,7 +6,7 @@ import { useDataStore } from '../../store/Global';
 const DeliveryMethod = ({goNext,editMode}) => {
   const {updateData}=useDataStore()
 const choosePlan=(method)=>{
-  updateData({paymentMethod:method})
+  updateData({deliveryMethod:method})
   if (!editMode) {
     goNext()  
   }

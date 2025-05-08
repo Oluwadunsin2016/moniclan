@@ -18,7 +18,7 @@ import SenderReason from "../components/transfer/SenderReason";
 import SenderInformation from "../components/transfer/SenderInformation";
 import SenderAddress from "../components/transfer/SenderAddress";
 import SenderContact from "../components/transfer/SenderContact";
-import AddPaymentCard from "../components/transfer/AddPaymentCard";
+import PaymentMethod from "../components/transfer/PaymentMethod";
 import CardDetails from "../components/transfer/CardDetails";
 import Preview from "../components/transfer/Preview";
 
@@ -61,9 +61,9 @@ const SendMoney = () => {
       { id: 7, content: <SenderInformation goNext={goNext}/> },
       { id: 8, content: <SenderAddress goNext={goNext}/> },
       { id: 9, content: <SenderContact goNext={goNext}/> },
-      { id: 10, content: <AddPaymentCard goNext={goNext}/> },
-      { id: 11, content: <CardDetails goNext={goNext}/> },
-      { id: 12, content: <Preview completed={completed}/> },
+      { id: 10, content: <PaymentMethod goNext={goNext}/> },
+      // { id: 11, content: <CardDetails goNext={goNext}/> },
+      { id: 11, content: <Preview completed={completed}/> },
   ];
   
 

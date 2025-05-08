@@ -66,7 +66,7 @@ export default function Nav() {
     //   href:"/hub"
     // },
     {
-      name: "Bill Ease",
+      name: "Bill Easy",
       href: "/bill",
     },
     {

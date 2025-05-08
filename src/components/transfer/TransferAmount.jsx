@@ -94,8 +94,12 @@ const TransferAmount = ({goNext,editMode}) => {
 
 const continuePayment=()=>{
     if (user) {
+      if (!data.amount) {
+        return notifier({message:"You haven't provided the amount",type:'error'})
+       }
       goNext()
-    }else{
+    }
+    else{
       notifier({message:'Sign in to continue',type:'error'})
     }
 
