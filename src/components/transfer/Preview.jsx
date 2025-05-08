@@ -8,9 +8,6 @@ import { Button, useDisclosure } from "@nextui-org/react";
 import { IoMdArrowDown } from "react-icons/io";
 import InfoUpdateModal from "./InfoUpdateModal";
 import { useDataStore } from "../../store/Global";
-import { useMakeTransaction } from "../../apis/transaction";
-import { notifier } from "../../lib/utils";
-import { LiaSpinnerSolid } from "react-icons/lia";
 import PaymentModal from "../hub/PaymentModal";
 import StripeModal from "../hub/StripeModa";
 import SuccessModal from "../hub/SuccessModal";
@@ -23,7 +20,6 @@ const Preview = ({completed}) => {
   const scrollContainerRef = useRef(null);
   const [showScrollButton, setShowScrollButton] = useState(true);
   const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
-  const {mutateAsync:makePayment, isPending}= useMakeTransaction()
 
   // Function to scroll down slightly
   const scrollDown = () => {
@@ -110,20 +106,19 @@ const Preview = ({completed}) => {
             color="primary"
             size="lg"
             className="rounded w-full text-lg py-2"
-            isDisabled={isPending}
             onPress={handleSubmit}
           >
-            {isPending? <span className="flex items-center gap-1 justify-center"><LiaSpinnerSolid className='animate-spin' size={22} /> Sending...</span> :'Send Money'}
+            Send Money
           </Button>
           <p className="my-4">
             By selecting <b>Send Money</b>, you agree to Cross over&apos;s{" "}
             <a className="text-blue-500 underline" href="">
               User Agreement, Privacy policy
-            </a>{" "}
-            and to receive communications according to the{" "}
+            </a>
+            and to receive communications according to the
             <a className="text-blue-500 underline" href="">
               E-sign Disclosure and Consent Notice
-            </a>{" "}
+            </a>
           </p>
         </div>
       </div>
