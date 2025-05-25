@@ -9,7 +9,7 @@ import { IoMdArrowDown } from "react-icons/io";
 import InfoUpdateModal from "./InfoUpdateModal";
 import { useDataStore } from "../../store/Global";
 import PaymentModal from "../hub/PaymentModal";
-import StripeModal from "../hub/StripeModa";
+import StripeModal from "../hub/StripeModal";
 import SuccessModal from "../hub/SuccessModal";
 
 const Preview = ({completed}) => {

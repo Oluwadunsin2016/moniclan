@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState } from 'react';
 import { useStripe, PaymentElement, useElements } from '@stripe/react-stripe-js';
@@ -23,21 +24,22 @@ const StripeCheckoutForm = ({payload, clearData, onClose,onOpenSuccess, handleCo
       return;
     }
 
-    const res = await makePayment(payload);
-    const { client_secret: clientSecret } = await res.json();
-    clearData()
+    const res = await makePayment({...payload, amount:payload?.amount/100});
+    console.log(res);
+    const { client_secret: clientSecret } = res.data;
+    console.log(clientSecret);
     const { error, paymentIntent } = await stripe.confirmPayment({
       elements,
       clientSecret,
-    //   confirmParams: {
-    //     return_url: 'http://localhost:5173/complete',
-    //   },
+      // confirmParams: {
+      //   return_url: 'http://localhost:5173/complete',
+      // },
     confirmParams: {
-        // remove return_url
+      return_url: 'http://localhost:5173/complete',
       },
       redirect: "if_required",
     });
-
+console.log(paymentIntent);
     if (error) {
       setErrorMessage(error.message);
     } else if (paymentIntent?.status === "succeeded") {
@@ -70,7 +72,8 @@ const StripeCheckoutForm = ({payload, clearData, onClose,onOpenSuccess, handleCo
         disabled={!stripe || !elements}
         className="w-full mt-10 mb-4"
       >
-        Pay {formatCurrency('NGN',Number(payload?.convertedAmount).toFixed(2))}
+        {/* Pay {formatCurrency('NGN',Number(payload?.convertedAmount).toFixed(2))} */}
+        Pay ${Number(payload?.amount/100).toFixed(2)}
       </Button>
     </form>
   );

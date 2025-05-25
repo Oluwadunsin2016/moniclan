@@ -6,16 +6,21 @@ import { loadStripe } from '@stripe/stripe-js';
 import StripeCheckoutForm from './StripeCheckoutForm';
 import { useDataStore } from '../../store/Global';
 
-const stripePromise = loadStripe('pk_test_51M6Gl6Bk8M3SFF5iquEcYoFrsv4Rim4gLlvkdnn3EhNGxi3kcfcf7JnLN1rYTKe5yxuD9KOPx0Ec1aPKsmrwRDlx00AUQVnYdg');
+const stripePromise = loadStripe('pk_test_51RMbxj09i38bl2Yc4l8koUqvK2M3ilZfxLrDaqdxJ0IRyH5VzLrv7Z1ZUa1YC2IQXn0EElyjGyU5jqco9STsC0ha00qPFWGeD5');
 
 
 const StripeModal = ({ isOpen, onClose,onOpenSuccess,handleComplete }) => {
     const {data,clearData}=useDataStore()
-
+    const rawAmount = Number(data?.amount);
+    const payload = {
+      ...data,
+      amount: !isNaN(rawAmount) && rawAmount > 0 ? Math.round(rawAmount * 100) : 0, // fallback to 0 if invalid
+    };
     const stripeOptions = {
       mode: 'payment',
-      amount: Math.round(data?.convertedAmount * 100),
-      currency: 'ngn',
+      // amount: Math.round(Number(data?.amount) * 100),
+      ...(payload.amount > 0 && { amount: payload.amount }),
+      currency: 'usd',
       appearance: {},
     };
     return (
@@ -24,7 +29,7 @@ const StripeModal = ({ isOpen, onClose,onOpenSuccess,handleComplete }) => {
         <ModalHeader className="text-lg font-bold">Complete Your Payment</ModalHeader>
         <ModalBody>
           <Elements stripe={stripePromise} options={stripeOptions}>
-            <StripeCheckoutForm handleComplete={handleComplete} onOpenSuccess={onOpenSuccess} payload={data} clearData={clearData} onClose={onClose} />
+            <StripeCheckoutForm handleComplete={handleComplete} onOpenSuccess={onOpenSuccess} payload={payload} clearData={clearData} onClose={onClose} />
           </Elements>
         </ModalBody>
       </ModalContent>

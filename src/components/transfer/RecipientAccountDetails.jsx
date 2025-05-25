@@ -19,6 +19,8 @@ const RecipientAccountDetails = ({ goNext,editMode }) => {
   const [accountNo, setAccountNo] = useState("");
 
   const ContinueToNext = () => {
+    console.log(isAccountVerified);
+    
     if (isAccountVerified.status) {
       goNext();
     }
@@ -170,7 +172,7 @@ const RecipientAccountDetails = ({ goNext,editMode }) => {
           </p>
         </div>
       {!editMode &&  <Button
-          onClick={ContinueToNext}
+          onPress={ContinueToNext}
           color="primary"
           className="mt-8 w-full rounded-md text-medium"
         >

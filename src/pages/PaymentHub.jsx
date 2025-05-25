@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { FaCcVisa } from "react-icons/fa";
 import { FaSync } from "react-icons/fa";
 import { PaystackButton } from "react-paystack";
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, Spinner, } from "@nextui-org/react";
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger,Select as NextSelect, SelectItem, Spinner, } from "@nextui-org/react";
 import { DatePicker, Select } from "antd";
 import PaymentModal from "../components/hub/PaymentModal";
 import { useCalculateCurrencyMutation } from "../apis/calculate";
@@ -13,11 +13,13 @@ import { useAuth } from "../lib/AuthContext";
 import { formatCurrency, notifier } from "../lib/utils";
 import { useDataStore } from "../store/Global";
 import FileUpload from "../components/shared/FileUpload";
-import { useCancelSubscription, useGetActiveSubscription } from "../apis/transaction";
+import { useCancelSubscription, useGetActiveSubscription, useMakeTransaction } from "../apis/transaction";
 import { services } from "../lib/data";
 import axios from "axios";
-import StripeModal from "../components/hub/StripeModa";
+import StripeModal from "../components/hub/StripeModal";
 import SuccessModal from "../components/hub/SuccessModal";
+import { countries, flutterwaveAfricanCountryCodes } from "../libs/constants";
+import FlutterwaveButton from "../components/hub/FlutterwaveButton";
 
 const PaymentHubPage = () => {
   const { user } = useAuth();
@@ -35,20 +37,33 @@ const [exchangeRate, setExchangeRate] = useState('')
 const [idCard, setIdCard] = useState('')
 const [bvn, setIdBvn] = useState('')
 const [error, setError] = useState("");
-const [isModalOpen, setIsModalOpen] = useState(false);
-const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+// const [isModalOpen, setIsModalOpen] = useState(false);
+// const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+ const {mutateAsync:makeTransaction}= useMakeTransaction()
 
-  
 const {data}=useGetActiveSubscription(user?._id)
+const africanFlutterwaveCountries = countries.filter(
+  (country) => flutterwaveAfricanCountryCodes.includes(country.code)
+);
+const uniqueCountries = Array.from(new Map(africanFlutterwaveCountries.map(c => [c.code, c])).values());
+
+const [country, setCountry] = useState(uniqueCountries[0]);
+
 
   const {mutateAsync, isPending}=useCalculateCurrencyMutation()
-   const {updateData}=useDataStore()
+   const {updateData,data:savedData, clearData}=useDataStore()
   ;
 
   const handleConvert = async() => {
-   const {convertedAmount,exchangeRate} = await mutateAsync({amount:usdAmount, from:'US', to:'NG'})
-   setExchangeRate(exchangeRate)
-   setNairaAmount(convertedAmount)
+    if (!country) return  notifier({message:'Select your country first',type:'error'})
+  try {
+    const {convertedAmount,exchangeRate} = await mutateAsync({amount:usdAmount, from:'US', to:country?.code})
+    setExchangeRate(exchangeRate)
+    setNairaAmount(convertedAmount)
+  } catch (error) {
+    console.log('error:',error.message);
+    notifier({message:'No conversion for the selected country',type:'error'})
+  }
   };
 
   // const handleGetConvertedAmount=async()=>{
@@ -57,8 +72,41 @@ const {data}=useGetActiveSubscription(user?._id)
   // }
 
   console.log("nairaAmount:",nairaAmount);
-  const notAvailable=plan=="onetime-off"?!bvn:!idCard || !bvn || !period
-  const disable=!service || !nairaAmount || !startDate || notAvailable || error
+//   const notAvailable =
+//   plan === "onetime-off"
+//     ? (country?.code === "NG" && !bvn || !idCard)
+//     : (!idCard || !bvn || !period);
+
+// const disable =
+//   !service || !nairaAmount || !startDate || notAvailable || error;
+const isNigeria = country?.code === "NG";
+const isOneTime = plan === "onetime-off";
+
+const disable = (() => {
+  if (isOneTime && isNigeria) {
+    // Case 1: one-time plan & NG
+    return !bvn || !service || !nairaAmount || !startDate || error;
+  }
+
+  if (!isOneTime && isNigeria) {
+    // Case 2: recurring plan & NG
+    return !bvn || !idCard || !period || !service || !nairaAmount || !startDate || error;
+  }
+
+  if (isOneTime && !isNigeria) {
+    // Case 3: one-time plan & not NG
+    return !service || !nairaAmount || !startDate || error;
+  }
+
+  if (!isOneTime && !isNigeria) {
+    // Case 4: recurring plan & not NG
+    return !period || !service || !nairaAmount || !startDate || error;
+  }
+
+  // Default to disabling just in case
+  return true;
+})();
+
 
   // useEffect(() => {
   //   const fetchExchangeRate = async () => {
@@ -76,7 +124,7 @@ const {data}=useGetActiveSubscription(user?._id)
       amount: usdAmount,
       paymentMethod: "Transfer",
       from: "USD",
-      to: "NGN",
+      to: country?.currency_code,
       exchangeRate,
       plan,
       bvn,
@@ -93,7 +141,7 @@ const {data}=useGetActiveSubscription(user?._id)
       },
       senderDetails: user,
     });
-  }, [service,nairaAmount,plan,bvn,period,startDate])
+  }, [service,nairaAmount,plan,bvn,period,startDate,country])
 
 
   
@@ -101,22 +149,45 @@ const {data}=useGetActiveSubscription(user?._id)
   
 
   // Paystack configuration
-  const publicKey = "pk_test_bc994b313ae14fef8d8f893742a7a68f283527b9"; // Replace with your Paystack public key
+  const publicKey = "pk_test_54968fe9a69cf7152ad5b6bb551a547093b6b541"; // Replace with your Paystack public key
   const paystackAmount = nairaAmount * 100; // Convert to kobo
 
   const componentProps = {
     email:user?.email,
     amount: paystackAmount,
-    currency: "NGN",
+    currency: country?.currency_code,
     publicKey,
     text: "Pay with Paystack",
     metadata: {
       service: service, // Netflix, Spotify, etc.
       checkoutLink: checkoutLink, // Product link if available
     },
-    onSuccess: () => alert("Payment successful!"),
-    onClose: () => alert("Payment canceled"),
+    onSuccess: () => handleSavetransaction(),
+    onClose: () => alert("Payment cancelled"),
   };
+
+  const handleSavetransaction=async()=>{
+    let url={}
+    if (idCard) {
+      const formData = new FormData()
+      formData.append('media',idCard)
+      const response = await axios.post('https://backendurl.cittis.co/user/upload_media',formData)
+      console.log(response.data.data);
+url={idCard:response.data.data}
+      updateData({idCard:response.data.data})
+    }
+    await makeTransaction({...savedData, ...url},{
+      onSuccess:()=>{
+        notifier({message:'Transaction successful',type:'success'})
+        handleComplete()
+        clearData()
+      },
+      onError:(error)=>{
+        notifier({message:error.response.message??'There is an error making the transaction',type:'error'})
+        console.log(error);
+      }
+    })
+  }
 
 
 const handleSelect=(e)=>{
@@ -168,23 +239,23 @@ if (idCard) {
 }
 
 
-const handleStripePaymentOpen=async()=>{
-  if (!user) return  notifier({message:'Sign in to continue the transactions',type:'error'})
-  try {
-if (idCard) {
-  setIsStripeLoading(true)
-  const formData = new FormData()
-  formData.append('media',idCard)
-  const response = await axios.post('https://backendurl.cittis.co/user/upload_media',formData)
-  console.log(response.data.data);
-  updateData({idCard:response.data.data})
-  setIsStripeLoading(false)
-}
-setIsModalOpen(true) 
-  } catch (error) {
-    notifier({message:'An error occurred while uploading Id card',type:'error'})
-  }
-}
+// const handleStripePaymentOpen=async()=>{
+//   if (!user) return  notifier({message:'Sign in to continue the transactions',type:'error'})
+//   try {
+// if (idCard) {
+//   setIsStripeLoading(true)
+//   const formData = new FormData()
+//   formData.append('media',idCard)
+//   const response = await axios.post('https://backendurl.cittis.co/user/upload_media',formData)
+//   console.log(response.data.data);
+//   updateData({idCard:response.data.data})
+//   setIsStripeLoading(false)
+// }
+// setIsModalOpen(true) 
+//   } catch (error) {
+//     notifier({message:'An error occurred while uploading Id card',type:'error'})
+//   }
+// }
 
 
 
@@ -233,8 +304,29 @@ const onChange = (_, dateString) => {
 
       {/* Payment Form */}
       <div className="bg-white mt-8 p-6 rounded-lg shadow-md w-full">
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-between gap-8 mb-6">
      <ActiveSubScription subscriptions={data?.data?.subscriptions} />
+     <NextSelect
+     size="sm"
+     className="max-w-[400px]"
+            label="Your Country"
+            selectedKeys={country.code?new Set([country.code]) : new Set()}
+            onSelectionChange={(e) => {
+              const selected = uniqueCountries.find(c => c.code === e.currentKey);
+              setCountry(selected || null);
+            }}
+            required
+          >
+            {uniqueCountries.map((country) => (
+              <SelectItem key={country.code} textValue={country.name}
+              isDisabled={country.code === 'US'}>
+                <div className="flex items-center gap-2">
+                  <img src={country.image} alt={country.name} className="w-5 h-5" />
+                  <span>{country.name}</span>
+                </div>
+              </SelectItem>
+            ))}
+          </NextSelect>
         </div>
         <h2 className="text-lg font-semibold mb-4 whitespace-nowrap">Pay for your services</h2>
 
@@ -290,7 +382,8 @@ const onChange = (_, dateString) => {
               width: "100%",
               height: '40px'
             }} onChange={onChange} />
-<label className="block mt-4 font-medium text-gray-700">
+{country?.code === 'NG' && <div>
+  <label className="block mt-4 font-medium text-gray-700">
             BVN
           </label>
           <Input
@@ -311,13 +404,14 @@ const onChange = (_, dateString) => {
         }}
         placeholder="Enter 11-digit BVN"
       />
-</div>
 <div className={`${plan=='onetime-off'&&'hidden'}`}>
 <label className="block mt-4 font-medium text-gray-700">
             ID Card
           </label>
           <p className="text-xs text-gray-500  mb-2">Provide a valid ID card e.g voter&apos;s card, driver&apos;s licence etc</p>
           <FileUpload plan={plan} setIdCard={setIdCard}/>
+</div>
+  </div>}
 </div>
   
         {/* Select Service */}
@@ -367,14 +461,14 @@ const onChange = (_, dateString) => {
           disabled={usdAmount === ""||isPending}
           className="flex items-center justify-center w-full mt-4 bg-blue-600 disabled:bg-blue-300 disabled:cursor-not-allowed text-white p-2 rounded-lg hover:bg-blue-700 transition"
         >
-          {isPending? <span className="flex item-center justify-center gap-1"><FaSync className="w-5 h-5 ml-2 animate-spin duration-500" /> Converting</span> :'Convert to Naira'}
+          {isPending? <span className="flex item-center justify-center gap-1"><FaSync className="w-5 h-5 ml-2 animate-spin duration-500" /> Converting</span> :'Convert'}
         </button>
 
         {/* Naira Amount */}
-        <label className="block mt-4 font-medium text-gray-700">Amount in Naira</label>
+        <label className="block mt-4 font-medium text-gray-700">Converted Amount</label>
         <input
           type="text"
-          value={nairaAmount?formatCurrency('NGN',nairaAmount):''}
+          value={nairaAmount?formatCurrency(country?.currency_code,nairaAmount):''}
           readOnly
           className="w-full mt-1 p-2 border bg-gray-100 rounded-lg"
         />
@@ -397,19 +491,20 @@ const onChange = (_, dateString) => {
             className="w-full bg-green-600 disabled:bg-green-300 disabled:cursor-not-allowed text-white p-2 rounded-lg hover:bg-green-700 transition"
           />
 
-          <Button isDisabled={disable} onPress={handleStripePaymentOpen} className="w-full text-center bg-blue-700 text-white p-2 rounded-lg hover:bg-blue-800 transition">
+          {/* <Button isDisabled={disable} onPress={handleStripePaymentOpen} className="w-full text-center bg-blue-700 text-white p-2 rounded-lg hover:bg-blue-800 transition">
           
            {isStripeLoading? <span className="flex items-center gap-2 justify-center"><Spinner size="sm" color="white" /> Please wait...</span> :" Pay with Stripe"}
-          </Button>
+          </Button> */}
           
-          <Button isDisabled={disable} onPress={handleMakeTransfer} className="w-full text-center bg-gray-700 text-white p-2 rounded-lg hover:bg-gray-800 transition">
+          <FlutterwaveButton isDisabled={disable}  />
+        {country?.code === 'NG' && <Button isDisabled={disable} onPress={handleMakeTransfer} className="w-full text-center bg-gray-700 text-white p-2 rounded-lg hover:bg-gray-800 transition">
            {isLoading? <span className="flex items-center gap-2 justify-center"><Spinner size="sm" color="white" /> Please wait...</span> :"Pay with transfer"}
-          </Button>
+          </Button>}
         </div>
 
-        <PaymentModal handleComplete={handleComplete} isOpen={isOpen} onClose={()=>setIsOpen(false)} />
-        <StripeModal handleComplete={handleComplete} onOpenSuccess={() => setIsSuccessModalOpen(true)} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-        <SuccessModal isOpen={isSuccessModalOpen} onClose={() => setIsSuccessModalOpen(false)} />
+       <PaymentModal handleComplete={handleComplete} isOpen={isOpen} onClose={()=>setIsOpen(false)} />
+        {/* <StripeModal handleComplete={handleComplete} onOpenSuccess={() => setIsSuccessModalOpen(true)} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+        <SuccessModal isOpen={isSuccessModalOpen} onClose={() => setIsSuccessModalOpen(false)} /> */}
       </div>
     </div>
   );

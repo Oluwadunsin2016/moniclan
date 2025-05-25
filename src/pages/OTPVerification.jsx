@@ -91,7 +91,7 @@ const OTPVerification = () => {
   }, [otp]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-blue-100">
+    <div className="flex items-center justify-center min-h-screen bg-blue-100 w-full">
       <div className="bg-white p-6 min-h-[60vh] rounded-lg shadow-lg flex flex-col md:flex-row">
         <div className="flex-1 flex items-center justify-center p-4">
           <img
