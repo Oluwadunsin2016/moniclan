@@ -14,7 +14,7 @@ const PaymentModal = ({ isOpen, onClose,handleComplete}) => {
     const [loading, setLoading] = useState(false)
     const [isVerifying, setIsVerifying] = useState(false)
     const [isCopied, setIsCopied] = useState(false);
-     const {data,clearData}=useDataStore()
+     const {data}=useDataStore()
       const {mutateAsync:makePayment, isPending}= useMakeTransaction()
     const transaction = {
       amount: "50",
@@ -95,7 +95,7 @@ await makePayment(data,{
   onSuccess:()=>{
     notifier({message:'Transaction successful',type:'success'})
     handleComplete()
-    clearData()
+    // clearData()
     onClose()
   },
   onError:(error)=>{

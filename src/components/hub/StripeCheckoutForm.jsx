@@ -47,7 +47,6 @@ console.log(paymentIntent);
           onSuccess:()=>{
             notifier({message:'Transaction successful',type:'success'})
             handleComplete()
-            clearData()
             onClose()
           },
           onError:(error)=>{

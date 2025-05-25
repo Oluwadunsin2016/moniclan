@@ -83,6 +83,7 @@ const Preview = ({completed}) => {
   
   const handleComplete=()=>{
     clearData()
+    completed()
   }
 
 
