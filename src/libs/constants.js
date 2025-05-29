@@ -220,7 +220,7 @@ export const countries = [
   }
 ]
 
-export const flutterwaveAfricanCountryCodes = [
+export const africanCountryCodes = [
   "NG", // Nigeria
   "GH", // Ghana
   "KE", // Kenya

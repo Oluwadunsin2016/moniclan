@@ -18,7 +18,7 @@ import { services } from "../lib/data";
 import axios from "axios";
 import StripeModal from "../components/hub/StripeModal";
 import SuccessModal from "../components/hub/SuccessModal";
-import { countries, flutterwaveAfricanCountryCodes } from "../libs/constants";
+import { africanCountryCodes, countries,  } from "../libs/constants";
 import FlutterwaveButton from "../components/hub/FlutterwaveButton";
 
 const PaymentHubPage = () => {
@@ -42,10 +42,10 @@ const [error, setError] = useState("");
  const {mutateAsync:makeTransaction}= useMakeTransaction()
 
 const {data}=useGetActiveSubscription(user?._id)
-const africanFlutterwaveCountries = countries.filter(
-  (country) => flutterwaveAfricanCountryCodes.includes(country.code)
+const africanCountries = countries.filter(
+  (country) => africanCountryCodes.includes(country.code)
 );
-const uniqueCountries = Array.from(new Map(africanFlutterwaveCountries.map(c => [c.code, c])).values());
+const uniqueCountries = Array.from(new Map(africanCountries.map(c => [c.code, c])).values());
 
 const [country, setCountry] = useState(uniqueCountries[0]);
 

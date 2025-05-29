@@ -16,7 +16,7 @@ const AuthModal = ({ onOpenChange, isOpen, onClose }) => {
   
 
   return (
-    <Modal size="2xl" placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal size="2xl" placement="center" scrollBehavior="outside" isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
         <ModalBody className="p-6">
         <Tabs aria-label="Tabs colors" color={'primary'} radius="full">
