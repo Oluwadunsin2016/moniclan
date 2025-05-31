@@ -8,6 +8,7 @@ import { useSignupMutation } from "../apis/auth";
 import { notifier } from "../lib/utils";
 import { Select, SelectItem } from "@nextui-org/react";
 import { africanCountryCodes, countries } from "../libs/constants";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 
 export function SignUp({ onClose }) {
   const [isMerchant, setIsMerchant] = useState(false);
@@ -16,12 +17,15 @@ export function SignUp({ onClose }) {
   const fileInputRef = useRef(null);
   const { mutateAsync: signup, isPending } = useSignupMutation();
   const navigate = useNavigate();
-    const africanCountries = countries.filter(
-      (country) => africanCountryCodes.includes(country.code)
-    );
-    const uniqueCountries = Array.from(new Map(africanCountries.map(c => [c.code, c])).values());
-    const [country, setCountry] = useState(uniqueCountries[0]);
+  const africanCountries = countries.filter(
+    (country) => africanCountryCodes.includes(country.code)
+  );
+  const uniqueCountries = Array.from(new Map(africanCountries.map(c => [c.code, c])).values());
   
+  // State for password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const {
     handleSubmit,
     register,
@@ -35,10 +39,7 @@ export function SignUp({ onClose }) {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Set the file to state
       setBusinessImage(file);
-      
-      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -61,8 +62,8 @@ export function SignUp({ onClose }) {
     
     try {
       delete values.confirmPassword;
+      const {firstName, lastName, email, phone, password} = values;
       
-      // Prepare merchant data if applicable
       const merchantData = isMerchant ? {
         isMerchant: true,
         merchantInfo: {
@@ -71,14 +72,14 @@ export function SignUp({ onClose }) {
           address: values.address,
           country: values.country,
           state: values.state,
-          businessProfile: values.businessProfile || "",
-          businessImageFile: businessImage // Pass the file object directly
+          description: values.description,
+          businessImageFile: businessImage
         }
       } : {};
       
       const payload = referredBy
-        ? { ...values, role: 'user', referredBy, ...merchantData }
-        : { ...values, role: 'user', ...merchantData };
+        ? { firstName, lastName, email, phone, password, role: 'user', referredBy, ...merchantData }
+        : { firstName, lastName, email, phone, password, role: 'user', ...merchantData };
 
       const { data } = await signup(payload);
       sessionStorage.setItem('email', data.user.email);
@@ -234,12 +235,12 @@ export function SignUp({ onClose }) {
                 }}
                 required
               >
-               <SelectItem textValue="">Select category</SelectItem>
-                      <SelectItem textValue="Restaurants">Restaurant</SelectItem>
-                      <SelectItem textValue="Food Items">Food Items</SelectItem>
-                      <SelectItem textValue="African Attire">African Attire</SelectItem>
-                      <SelectItem textValue="Herb">Herb</SelectItem>
-                      <SelectItem textValue="Hair Saloon">Hair Saloon</SelectItem>
+               <SelectItem key="">Select category</SelectItem>
+                      <SelectItem key="Restaurant">Restaurant</SelectItem>
+                      <SelectItem key="Food Items">Food Items</SelectItem>
+                      <SelectItem key="African Attire">African Attire</SelectItem>
+                      <SelectItem key="Herb">Herb</SelectItem>
+                      <SelectItem key="Hair Saloon">Hair Saloon</SelectItem>
               </Select>
                     {errors?.category && (
                       <p className="text-red-500 text-base italic">
@@ -304,19 +305,15 @@ export function SignUp({ onClose }) {
                  radius="full"
                  
                 {...register("country", { required: isMerchant })}
-                selectedKeys={country.code ? new Set([country.code]) : new Set()}
                 onSelectionChange={(e) => {
-                  const selectedCode = Array.from(e)[0];
-                  const selected = uniqueCountries.find(c => c.code === selectedCode);
-                  console.log("selectedCountry",selected);
-                  setValue("country",selected.name)
-                  if (selected) setCountry(selected);
+                  const selected = Array.from(e)[0];
+                  setValue("country",selected) 
                 }}
                 required
               >
                 {uniqueCountries.map((country) => (
                   <SelectItem 
-                    key={country.code} 
+                    key={country.name} 
                     textValue={country.name}
                   >
                     <div className="flex items-center gap-2">
@@ -358,7 +355,28 @@ export function SignUp({ onClose }) {
                       )}
                     </div>
                   </div>
-                  
+                   {/* Description */}
+                  <div className="flex flex-col w-full mb-4">
+                      <label htmlFor="description" className="opacity-70">
+                        Description
+                      </label>
+                      <textarea
+                      rows={3}
+                        className="bg-[#FFF] px-4 py-3 outline-none w-full text-[#000000] border transition-colors duration-100 focus:border-[#596A95] border-gray-300 rounded-lg"
+                        name="description"
+                        {...register("description", {
+                          required: isMerchant && "Description is required",
+                        })}
+                        placeholder="Description of your business"
+                        type="text"
+                        disabled={isPending}
+                      />
+                      {errors?.description?.message && (
+                        <p className="text-red-500 text-base italic">
+                          {errors?.description?.message}
+                        </p>
+                      )}
+                    </div>
                   {/* Business Image Upload */}
                   <div className="flex flex-col mb-4">
                     <label htmlFor="businessImage" className="opacity-70 mb-2">
@@ -397,7 +415,7 @@ export function SignUp({ onClose }) {
                         onClick={triggerFileInput}
                       >
                         <div className="flex flex-col items-center justify-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                           </svg>
                           <p className="mt-2 text-sm text-gray-600">
@@ -414,52 +432,71 @@ export function SignUp({ onClose }) {
               </>
             )}
             
-            {/* Password Fields */}
+            {/* Password Fields with Show/Hide */}
             <div className="flex gap-6 flex-col sm:flex-row">
-              <div className="flex flex-col w-full">
+              <div className="flex flex-col w-full relative">
                 <label htmlFor="" className="opacity-70">
                   Password
                 </label>
-                <input
-                  className="bg-[#FFF] px-4 py-3 outline-none w-full text-[#000000] border transition-colors duration-100 focus:border-[#596A95] border-gray-300 rounded-full"
-                  name="text"
-                  {...register("password", {
-                    required: "Password is required",
-                    minLength: {
-                      value: 8,
-                      message: "Password must be at least 8 characters long",
-                    },
-                  })}
-                  placeholder=""
-                  type="password"
-                  disabled={isPending}
-                />
+                <div className="relative">
+                  <input
+                    className="bg-[#FFF] px-4 py-3 outline-none w-full text-[#000000] border transition-colors duration-100 focus:border-[#596A95] border-gray-300 rounded-full pr-10"
+                    name="password"
+                    {...register("password", {
+                      required: "Password is required",
+                      minLength: {
+                        value: 8,
+                        message: "Password must be at least 8 characters long",
+                      },
+                    })}
+                    placeholder=""
+                    type={showPassword ? "text" : "password"}
+                    disabled={isPending}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <FaEye size={18} /> : <FaEyeSlash size={18} />}
+                  </button>
+                </div>
                 {errors?.password?.message && (
                   <p className="text-red-500 text-base italic">
                     {errors?.password?.message}
                   </p>
                 )}
               </div>
-              <div className="flex flex-col w-full">
+              
+              <div className="flex flex-col w-full relative">
                 <label htmlFor="" className="opacity-70">
                   Confirm Password
                 </label>
-                <input
-                  className="bg-[#FFF] px-4 py-3 outline-none w-full text-[#000000] border transition-colors duration-100 focus:border-[#596A95] border-gray-300 rounded-full"
-                  name="text"
-                  {...register("confirmPassword", {
-                    required: "Confirm Password is required",
-                    validate: (value) =>
-                      value === password || "Passwords do not match",
-                    minLength: {
-                      value: 8,
-                      message: "Password must be at least 8 characters long",
-                    },
-                  })}
-                  disabled={isPending}
-                  placeholder=""
-                  type="password"
-                />
+                <div className="relative">
+                  <input
+                    className="bg-[#FFF] px-4 py-3 outline-none w-full text-[#000000] border transition-colors duration-100 focus:border-[#596A95] border-gray-300 rounded-full pr-10"
+                    name="confirmPassword"
+                    {...register("confirmPassword", {
+                      required: "Confirm Password is required",
+                      validate: (value) =>
+                        value === password || "Passwords do not match",
+                      minLength: {
+                        value: 8,
+                        message: "Password must be at least 8 characters long",
+                      },
+                    })}
+                    disabled={isPending}
+                    placeholder=""
+                    type={showConfirmPassword ? "text" : "password"}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? <FaEye size={18} /> : <FaEyeSlash size={18} />}
+                  </button>
+                </div>
                 {errors?.confirmPassword?.message && (
                   <p className="text-red-500 text-base italic">
                     {errors?.confirmPassword?.message}

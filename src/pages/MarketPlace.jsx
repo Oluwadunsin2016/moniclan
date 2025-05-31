@@ -18,163 +18,163 @@
 //   // Sample product data
 //   const products = [
 //     {
-//       id: 1,
+//  
 //       name: 'Wireless Noise-Cancelling Headphones',
 //       price: 129.99,
 //       category: 'Electronics',
-//       rating: 4.5,
+//   
 //       image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500',
 //     },
 //     {
-//       id: 2,
+//  
 //       name: 'Organic Cotton T-Shirt',
 //       price: 29.99,
 //       category: 'Clothing',
-//       rating: 4.2,
+//   
 //       image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500',
 //     },
 //     {
-//       id: 3,
+//  
 //       name: 'Smart Fitness Watch',
 //       price: 199.99,
 //       category: 'Electronics',
-//       rating: 4.7,
+//   
 //       image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500',
 //     },
 //     {
-//       id: 4,
+//  
 //       name: 'Genuine Leather Wallet',
 //       price: 49.99,
 //       category: 'Accessories',
-//       rating: 4.3,
+//   
 //       image: 'https://images.unsplash.com/photo-1591561954555-607968c989ab?w=500',
 //     },
 //     {
-//       id: 5,
+//  
 //       name: 'Ceramic Coffee Mug Set',
 //       price: 24.99,
 //       category: 'Home',
-//       rating: 4.8,
+//   
 //       image: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=500',
 //     },
 //     {
-//       id: 6,
+//  
 //       name: 'Hardcover Recipe Book',
 //       price: 19.99,
 //       category: 'Books',
-//       rating: 4.6,
+//   
 //       image: 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500',
 //     },
 //     {
-//       id: 7,
+//  
 //       name: 'Yoga Mat (Non-Slip)',
 //       price: 34.99,
 //       category: 'Fitness',
-//       rating: 4.4,
+//   
 //       image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500',
 //     },
 //     {
-//       id: 8,
+//  
 //       name: 'Vitamin C Serum',
 //       price: 27.99,
 //       category: 'Beauty',
-//       rating: 4.5,
+//   
 //       image: 'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=500',
 //     },
 //     {
-//       id: 9,
+//  
 //       name: 'Bluetooth Portable Speaker',
 //       price: 89.99,
 //       category: 'Electronics',
-//       rating: 4.3,
+//   
 //       image: 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=500',
 //     },
 //     {
-//       id: 10,
+//  
 //       name: 'Denim Jeans (Slim Fit)',
 //       price: 59.99,
 //       category: 'Clothing',
-//       rating: 4.1,
+//   
 //       image: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=500',
 //     },
 //     {
-//       id: 11,
+//  
 //       name: 'Stainless Steel Water Bottle',
 //       price: 22.99,
 //       category: 'Outdoors',
-//       rating: 4.7,
+//   
 //       image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500',
 //     },
 //     {
-//       id: 12,
+//  
 //       name: 'Wireless Phone Charger',
 //       price: 18.99,
 //       category: 'Electronics',
-//       rating: 4.0,
+//   
 //       image: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=500',
 //     },
 //     {
-//       id: 13,
+//  
 //       name: 'Aromatherapy Diffuser',
 //       price: 32.99,
 //       category: 'Home',
-//       rating: 4.4,
+//   
 //       image: 'https://images.unsplash.com/photo-1606041008023-472dfb5e530f?w=500',
 //     },
 //     {
-//       id: 14,
+//  
 //       name: 'Running Shoes',
 //       price: 79.99,
 //       category: 'Footwear',
-//       rating: 4.6,
+//   
 //       image: 'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=500',
 //     },
 //     {
-//       id: 15,
+//  
 //       name: 'Canvas Backpack',
 //       price: 45.99,
 //       category: 'Accessories',
-//       rating: 4.5,
+//   
 //       image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500',
 //     },
 //     {
-//       id: 16,
+//  
 //       name: 'Organic Green Tea',
 //       price: 12.99,
 //       category: 'Food',
-//       rating: 4.8,
+//   
 //       image: 'https://images.unsplash.com/photo-1561047029-3000c68339ca?w=500',
 //     },
 //     {
-//       id: 17,
+//  
 //       name: 'Resistance Bands Set',
 //       price: 29.99,
 //       category: 'Fitness',
-//       rating: 4.2,
+//   
 //       image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=500',
 //     },
 //     {
-//       id: 18,
+//  
 //       name: 'Wooden Desk Organizer',
 //       price: 39.99,
 //       category: 'Office',
-//       rating: 4.3,
+//   
 //       image: 'https://images.unsplash.com/photo-1585637071663-799845ad5212?w=500',
 //     },
 //     {
-//       id: 19,
+//  
 //       name: 'Sunglasses (UV Protection)',
 //       price: 65.99,
 //       category: 'Accessories',
-//       rating: 4.7,
+//   
 //       image: 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500',
 //     },
 //     {
-//       id: 20,
+//  
 //       name: 'Indoor Plant (Snake Plant)',
 //       price: 34.99,
 //       category: 'Garden',
-//       rating: 4.9,
+//   
 //       image: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=500',
 //     }
 //   ];
@@ -424,7 +424,7 @@
 //       address: "123 Victoria Island",
 //       businessProfile: "https://savannahgrill.com",
 //       businessImageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500",
-//       rating: 4.5,
+//   
 //       description: "Authentic Nigerian cuisine in a modern setting"
 //     },
 //     {
@@ -436,7 +436,7 @@
 //       address: "45 Lekki Phase 1",
 //       businessProfile: "https://afrofoodmarket.com",
 //       businessImageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500",
-//       rating: 4.2,
+//   
 //       description: "Premium African food ingredients delivered to your door"
 //     },
 //     {
@@ -448,7 +448,7 @@
 //       address: "78 Central District",
 //       businessProfile: "https://nubianthreads.com",
 //       businessImageUrl: "https://images.unsplash.com/photo-1591561954555-607968c989ab?w=500",
-//       rating: 4.7,
+//   
 //       description: "Handcrafted African clothing and accessories"
 //     },
 //     {
@@ -460,7 +460,7 @@
 //       address: "22 Abeokuta Road",
 //       businessProfile: "https://herbalhaven.com",
 //       businessImageUrl: "https://images.unsplash.com/photo-1597318181409-cf64d0b5d8a2?w=500",
-//       rating: 4.3,
+//   
 //       description: "Traditional African herbs and natural remedies"
 //     },
 //     {
@@ -472,7 +472,7 @@
 //       address: "56 Ikeja City Mall",
 //       businessProfile: "https://curlsandcoils.com",
 //       businessImageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500",
-//       rating: 4.8,
+//   
 //       description: "Specialists in African hair care and styling"
 //     },
 //     {
@@ -484,7 +484,7 @@
 //       address: "34 Kilimani Road",
 //       businessProfile: "https://tasteofkenya.com",
 //       businessImageUrl: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=500",
-//       rating: 4.6,
+//   
 //       description: "Experience the rich flavors of Kenyan cuisine"
 //     }
 //   ];
@@ -713,6 +713,7 @@ import { useState, useEffect } from 'react';
 import { FiSearch, FiStar, FiMapPin } from 'react-icons/fi';
 import { Select, SelectItem } from "@nextui-org/react";
 import { africanCountryCodes, countries } from '../libs/constants';
+import { useGetMerchants } from '../apis/auth';
 
 const MarketplacePage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -723,113 +724,91 @@ const MarketplacePage = () => {
   const uniqueCountries = Array.from(new Map(africanCountries.map(c => [c.code, c])).values());
   const [country, setCountry] = useState(uniqueCountries[0]);
   const [businesses, setBusinesses] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
+  const {data, isPending:isLoading} = useGetMerchants({country: country.name, category: activeCategory});
+  console.log("data", data?.merchants);
+  
 
-  const categories = ['All', 'Restaurants', 'Food Items', 'African Attire', 'Herb', 'Hair Saloon'];
+  const categories = ['All', 'Restaurant', 'Food Items', 'African Attire', 'Herb', 'Hair Saloon'];
 
-  // Sample business data
-  const sampleBusinesses = [
-    {
-      id: 1,
-      merchantName: "Savannah Grill",
-      category: "Restaurants",
-      country: "Nigeria",
-      state: "Lagos",
-      address: "123 Victoria Island",
-      businessProfile: "https://savannahgrill.com",
-      businessImageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500",
-      rating: 4.5,
-      description: "Authentic Nigerian cuisine in a modern setting"
-    },
-    {
-      id: 2,
-      merchantName: "AfroFood Market",
-      category: "Food Items",
-      country: "Nigeria",
-      state: "Lagos",
-      address: "45 Lekki Phase 1",
-      businessProfile: "https://afrofoodmarket.com",
-      businessImageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500",
-      rating: 4.2,
-      description: "Premium African food ingredients delivered to your door"
-    },
-    {
-      id: 3,
-      merchantName: "Nubian Threads",
-      category: "African Attire",
-      country: "Nigeria",
-      state: "Abuja",
-      address: "78 Central District",
-      businessProfile: "https://nubianthreads.com",
-      businessImageUrl: "https://images.unsplash.com/photo-1591561954555-607968c989ab?w=500",
-      rating: 4.7,
-      description: "Handcrafted African clothing and accessories"
-    },
-    {
-      id: 4,
-      merchantName: "Herbal Haven",
-      category: "Herb",
-      country: "Nigeria",
-      state: "Ogun",
-      address: "22 Abeokuta Road",
-      businessProfile: "https://herbalhaven.com",
-      businessImageUrl: "https://images.unsplash.com/photo-1597318181409-cf64d0b5d8a2?w=500",
-      rating: 4.3,
-      description: "Traditional African herbs and natural remedies"
-    },
-    {
-      id: 5,
-      merchantName: "Curls & Coils",
-      category: "Hair Saloon",
-      country: "Nigeria",
-      state: "Lagos",
-      address: "56 Ikeja City Mall",
-      businessProfile: "https://curlsandcoils.com",
-      businessImageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500",
-      rating: 4.8,
-      description: "Specialists in African hair care and styling"
-    },
-    {
-      id: 6,
-      merchantName: "Taste of Kenya",
-      category: "Restaurants",
-      country: "Kenya",
-      state: "Nairobi",
-      address: "34 Kilimani Road",
-      businessProfile: "https://tasteofkenya.com",
-      businessImageUrl: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=500",
-      rating: 4.6,
-      description: "Experience the rich flavors of Kenyan cuisine"
-    },
-    {
-      id: 7,
-      merchantName: "Spice Traders",
-      category: "Food Items",
-      country: "Ghana",
-      state: "Accra",
-      address: "89 Independence Ave",
-      businessProfile: "https://spicetraders.com",
-      businessImageUrl: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=500",
-      rating: 4.4,
-      description: "Premium African spices and cooking ingredients"
-    },
-    {
-      id: 8,
-      merchantName: "Zulu Designs",
-      category: "African Attire",
-      country: "South Africa",
-      state: "Johannesburg",
-      address: "12 Soweto Plaza",
-      businessProfile: "https://zuludesigns.com",
-      businessImageUrl: "https://images.unsplash.com/photo-1591369822090-8d9a14fdd0c5?w=500",
-      rating: 4.5,
-      description: "Contemporary African fashion inspired by tradition"
-    }
-  ];
+ // const sampleBusinesses = [
+  //   {
+  //     merchantName: "Savannah Grill",
+  //     category: "Restaurants",
+  //     country: "Nigeria",
+  //     state: "Lagos",
+  //     address: "123 Victoria Island",
+  //     businessImageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500",
+  //     description: "Authentic Nigerian cuisine in a modern setting"
+  //   },
+  //   {
+  //     merchantName: "AfroFood Market",
+  //     category: "Food Items",
+  //     country: "Nigeria",
+  //     state: "Lagos",
+  //     address: "45 Lekki Phase 1",
+  //     businessImageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500",
+  //     description: "Premium African food ingredients delivered to your door"
+  //   },
+  //   {
+  //     merchantName: "Nubian Threads",
+  //     category: "African Attire",
+  //     country: "Nigeria",
+  //     state: "Abuja",
+  //     address: "78 Central District",
+  //     businessImageUrl: "https://images.unsplash.com/photo-1591561954555-607968c989ab?w=500",
+  //     description: "Handcrafted African clothing and accessories"
+  //   },
+  //   {
+  //     merchantName: "Herbal Haven",
+  //     category: "Herb",
+  //     country: "Nigeria",
+  //     state: "Ogun",
+  //     address: "22 Abeokuta Road",
+  //     businessImageUrl: "https://images.unsplash.com/photo-1597318181409-cf64d0b5d8a2?w=500",
+  //     description: "Traditional African herbs and natural remedies"
+  //   },
+  //   {
+  //     merchantName: "Curls & Coils",
+  //     category: "Hair Saloon",
+  //     country: "Nigeria",
+  //     state: "Lagos",
+  //     address: "56 Ikeja City Mall",
+  //     businessImageUrl: "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=500",
+  //     description: "Specialists in African hair care and styling"
+  //   },
+  //   {
+  //     merchantName: "Taste of Kenya",
+  //     category: "Restaurants",
+  //     country: "Kenya",
+  //     state: "Nairobi",
+  //     address: "34 Kilimani Road",
+  //     businessImageUrl: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=500",
+  //     description: "Experience the rich flavors of Kenyan cuisine"
+  //   },
+  //   {
+  //     merchantName: "Spice Traders",
+  //     category: "Food Items",
+  //     country: "Ghana",
+  //     state: "Accra",
+  //     address: "89 Independence Ave",
+  //     businessImageUrl: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=500",
+  //     description: "Premium African spices and cooking ingredients"
+  //   },
+  //   {
+  //     merchantName: "Zulu Designs",
+  //     category: "African Attire",
+  //     country: "South Africa",
+  //     state: "Johannesburg",
+  //     address: "12 Soweto Plaza",
+  //     businessImageUrl: "https://images.unsplash.com/photo-1591369822090-8d9a14fdd0c5?w=500",
+  //     description: "Contemporary African fashion inspired by tradition"
+  //   }
+  // ];  // Sample business data
+ 
 
   // Simulate API call to fetch businesses
   useEffect(() => {
-    setIsLoading(true);
     
     // In a real app, you would fetch from your API:
     // fetch(`/api/businesses?country=${country.name}`)
@@ -840,22 +819,23 @@ const MarketplacePage = () => {
     //   });
     
     // For demo, use sample data after a delay
-    setTimeout(() => {
-      setBusinesses(sampleBusinesses);
-      setIsLoading(false);
-    }, 800);
-  }, [country]);
+   if (data) {
+    setBusinesses(data?.merchants);
+   }
+    // setBusinesses(sampleBusinesses);
+  }, [data]);
 
-  const filteredBusinesses = businesses.filter(business => {
-    const matchesSearch = business.merchantName.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredBusinesses = businesses?.filter(business => {
+    const matchesSearch = business?.merchantInfo?.merchantName.toLowerCase().includes(searchQuery.toLowerCase());
     
     // If "All" is selected, show businesses in the selected country
-    const matchesCategory = activeCategory === 'All' || business.category === activeCategory;
+    // const matchesCategory = activeCategory === 'All' || business.category === activeCategory;
     
     // Filter by selected country
-    const matchesCountry = business.country === country.name;
+    // const matchesCountry = business.country === country.name;
     
-    return matchesSearch && matchesCategory && matchesCountry;
+    // return matchesSearch && matchesCategory && matchesCountry;
+    return matchesSearch
   });
 
   return (
@@ -943,7 +923,7 @@ const MarketplacePage = () => {
                 ? `All Businesses from ${country.name}` 
                 : `${activeCategory} from ${country.name}`}
               <span className="text-sm text-gray-500 ml-2">
-                ({filteredBusinesses.length} {filteredBusinesses.length === 1 ? 'business' : 'businesses'})
+                ({filteredBusinesses?.length} {filteredBusinesses?.length === 1 ? 'business' : 'businesses'})
               </span>
             </h2>
           </div>
@@ -963,7 +943,7 @@ const MarketplacePage = () => {
                 </div>
               ))}
             </div>
-          ) : filteredBusinesses.length === 0 ? (
+          ) : filteredBusinesses?.length === 0 ? (
             <div className="bg-white rounded-lg shadow-sm p-12 text-center">
               <p className="text-gray-500 text-lg">
                 No businesses from {country.name} found {activeCategory !== 'All' ? ` in the ${activeCategory} category` : ''}
@@ -980,16 +960,16 @@ const MarketplacePage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {filteredBusinesses.map(business => (
+              {filteredBusinesses?.map(business => (
                 <div 
                   key={business.id} 
                   className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col border border-gray-100"
                 >
                   <div className="relative h-[16rem] w-full">
-                    {business.businessImageUrl ? (
+                    {business.merchantInfo.businessImageUrl ? (
                       <img
-                        src={business.businessImageUrl}
-                        alt={business.merchantName}
+                        src={business.merchantInfo.businessImageUrl}
+                        alt={business.merchantInfo.merchantName}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -1001,20 +981,20 @@ const MarketplacePage = () => {
                       </div>
                     )}
                     <div className="absolute bottom-2 left-2 bg-indigo-600 text-white text-xs px-2 py-1 rounded">
-                      {business.category}
+                      {business.merchantInfo.category}
                     </div>
                   </div>
                   
                   <div className="p-4 flex-grow flex flex-col">
-                    <h3 className="font-bold text-gray-900 text-lg mb-1">{business.merchantName}</h3>
-                    
-                    <div className="flex items-center mb-2">
+                    <h3 className="font-bold text-gray-900 text-lg mb-1">{business.merchantInfo.merchantName}</h3>
+                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center">
                       <div className="flex text-yellow-400">
                         {[...Array(5)].map((_, i) => (
                           <FiStar
                             key={i}
                             className={
-                              i < Math.floor(business.rating) 
+                              i < Math.floor(4.5) 
                                 ? 'fill-current' 
                                 : 'text-gray-300'
                             }
@@ -1022,17 +1002,20 @@ const MarketplacePage = () => {
                         ))}
                       </div>
                       <span className="text-xs text-gray-500 ml-1">
-                        ({business.rating})
+                        ({4.5})
                       </span>
                     </div>
-                    
+                    <div className=" bg-slate-300 text-xs px-2 py-1 rounded-full">
+                      {business.merchantInfo.country}
+                    </div>
+                    </div>
                     <div className="flex items-center mb-2 text-sm text-gray-600">
                       <FiMapPin className="mr-1" />
-                      {business.address}, {business.state}
+                      {business.merchantInfo.address}, {business.merchantInfo.state}
                     </div>
                     
                     <p className="text-gray-600 text-sm mb-4 flex-grow line-clamp-1">
-                      {business.description}
+                      {business.merchantInfo.description}
                     </p>
                     
                     {/* <div className="flex gap-2 mt-auto">

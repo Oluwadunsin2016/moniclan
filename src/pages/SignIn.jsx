@@ -6,9 +6,13 @@ import { LiaSpinnerSolid } from "react-icons/lia";
 import { useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../apis/auth";
 import { notifier } from "../lib/utils";
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export function SignIn({onClose}) {
   const { mutateAsync: login, isPending } = useLoginMutation();
+
+    const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const {
     handleSubmit,
@@ -60,7 +64,7 @@ export function SignIn({onClose}) {
               },
             })}
             placeholder="Enter email or username"
-            type="text"
+            type="email"
             disabled={isPending}
           />
           {errors?.email?.message && (
@@ -73,6 +77,7 @@ export function SignIn({onClose}) {
           <label htmlFor="" className="opacity-70">
             Password
           </label>
+        <div className="relative">
           <input
             className="bg-[#FFF] px-4 py-3 outline-none w-full text-[#000000] border transition-colors duration-100 focus:border-[#596A95] border-gray-300 rounded-full"
             name="text"
@@ -84,9 +89,17 @@ export function SignIn({onClose}) {
               },
             })}
             placeholder=""
-            type="text"
+            type={showPassword ? "text" : "password"}
             disabled={isPending}
           />
+             <button
+                              type="button"
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                              onClick={() => setShowPassword(!showPassword)}
+                            >
+                              {showPassword ? <FaEye size={18} /> : <FaEyeSlash size={18} />}
+                            </button>
+        </div>
           {errors?.password?.message && (
             <p className="text-red-500 text-base italic">
               {errors?.password?.message}

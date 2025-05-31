@@ -78,3 +78,13 @@ export const useGetProfile = () => {
     },
   });
 };
+export const useGetMerchants = (payload) => {
+  return useQuery({
+    queryKey: ["merchants", payload.country, payload.category],
+    queryFn: async () => {
+      const response = await http.get(`/auth/merchants?country=${payload.country}&category=${payload.category}`);
+      return response.data;
+    },
+    enabled: !!payload.country && !!payload.category,
+  });
+};
